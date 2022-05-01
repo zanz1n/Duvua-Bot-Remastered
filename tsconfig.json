@@ -19,7 +19,7 @@
   },
   "include": [
     "src",
-    "config.ts"
+    "botconfig.ts"
   ],
   "exclude": [
     "node_modules",
