@@ -1,5 +1,5 @@
 import { Client } from 'discord.js'
-import Config from '../../config'
+import Config from '../../botconfig'
 import fs from 'fs'
 import mongoose from 'mongoose'
 
