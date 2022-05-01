@@ -7,7 +7,7 @@ module.exports = class extends slashCommand {
         super(client, {
             name: "avatar",
             description: "Mostra o avatar de um usuário",
-            ephemeral: true,
+            ephemeral: false,
             disabled: false,
             options: [
                 {
