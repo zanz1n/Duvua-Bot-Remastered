@@ -1,7 +1,5 @@
 import Event from '../../structures/Event'
 import Bot from '../../structures/Client'
-import Config from '../../../config'
-const config = new Config()
 
 module.exports = class extends Event {
     constructor(client: Bot) {
