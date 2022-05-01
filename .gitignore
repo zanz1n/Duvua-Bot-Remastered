@@ -3,4 +3,4 @@ dist
 .env
 *.log
 
-config.ts
+botconfig.ts
