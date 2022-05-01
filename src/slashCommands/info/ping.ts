@@ -8,14 +8,12 @@ module.exports = class extends slashCommand {
             name: "ping",
             description: "Shows the bot ping and replies with pong",
             disabled: false,
-            ephemeral: false
+            ephemeral: true
         })
     }
     run = async (interaction: sInteraction) => {
-        const button = new MessageActionRow().addComponents(
-            new MessageButton().setCustomId('yes').setLabel('Sim').setStyle('SUCCESS'),
-            new MessageButton().setCustomId('no').setLabel('No').setStyle('DANGER')
-        )
-        interaction.editReply({ components: [button] })
+        const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
+        embed.setDescription(`**Pong!**\nPing do bot: ${this.client.ws.ping} ms`)
+        interaction.editReply({ content: null, embeds: [embed] })
     }
 }
