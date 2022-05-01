@@ -35,7 +35,7 @@ module.exports = class extends slashCommand {
         const subCommand = interaction.options.getSubcommand()
 
         if (subCommand === "create") {
-            const buyEmbed = new MessageEmbed()
+            const buyEmbed = new MessageEmbed().setColor(this.client.config.embed_default_color)
 
             const channel = interaction.options.getChannel('canal')
 
@@ -82,7 +82,7 @@ module.exports = class extends slashCommand {
                             })
 
                         interactiondb.save()
-                        const embed = new MessageEmbed()
+                        const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
 
                         await interaction.guild.channels.create(`Ticket-${interaction.user.tag}`, {
                             permissionOverwrites: [
@@ -130,7 +130,7 @@ module.exports = class extends slashCommand {
 
                             collector.on("collect", async (tI: sInteraction) => {
                                 if (tI.customId === "cancel") {
-                                    const embed = new MessageEmbed()
+                                    const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
                                     const find = await ticket.findById(interaction.guild.id + interaction.user.id)
                                     if (find) {
                                         const channel = interaction.guild.channels.cache.get(find.channel.id)
@@ -152,7 +152,9 @@ module.exports = class extends slashCommand {
                                     }
                                 }
                             })
-                            const ticketEembd = new MessageEmbed().setDescription("**Seu ticket foi criado nesse canal**\nUse o botão abaixo caso deseje deletar")
+                            const ticketEembd = new MessageEmbed()
+                                .setDescription("**Seu ticket foi criado nesse canal**\nUse o botão abaixo caso deseje deletar")
+                                .setColor(this.client.config.embed_default_color)
 
                             ticketChannel.send({ content: `${interaction.user}`, embeds: [ticketEembd], components: [button] })
 
@@ -172,7 +174,7 @@ module.exports = class extends slashCommand {
 
         }
         else if (subCommand === "delete") {
-            const embed = new MessageEmbed()
+            const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
             const find = await ticket.findById(interaction.guild.id + interaction.user.id)
             if (find) {
                 const channel = interaction.guild.channels.cache.get(find.channel.id)
