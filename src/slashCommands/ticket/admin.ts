@@ -18,9 +18,9 @@ module.exports = class extends slashCommand {
             }],
         })
     }
-    run = async (interaction: any) => {
-        const embed = new MessageEmbed()
-        if (interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+    run = async (interaction: sInteraction) => {
+        const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
+        if (interaction.memberPermissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
             const user = interaction.options.getUser('usuario')
 
             const find = await ticket.findById(interaction.guild.id + user.id)
