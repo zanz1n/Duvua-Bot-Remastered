@@ -51,7 +51,12 @@ module.exports = class extends slashCommand {
                 return await interaction.editReply({ embeds: [buyEmbed] })
             }
 
-            buyEmbed.setTitle(`🚀Nitro classic\n💸Preço: 5$\n🛒Estoque: 15`)
+            buyEmbed.setTitle(`
+            🚀 Nitro classic mensal
+                💸 Preço: 5$
+                🛒 Estoque: 15\n🎮 Nitro gaming mensal
+                💸 Preço: 10$
+                🛒 Estoque: 15`)
                 .setColor("#00ff00")
                 .setDescription(`Clique no botão \`"🛒 Comprar"\` para comprar`)
 

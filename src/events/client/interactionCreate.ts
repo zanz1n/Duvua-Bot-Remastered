@@ -12,8 +12,8 @@ module.exports = class extends Event {
     run = async (interaction: any) => {
         if (interaction.user.bot) return
 
-        if (this.client.config.dev_mode) console.log(`\x1b[36m[bot-events] Interaction created\x1b[0m`)
         if (interaction.isCommand()) {
+            if (this.client.config.dev_mode) console.log(`\x1b[36m[bot-events] Command Interaction created\x1b[0m`)
             const cmd = await this.client.slashCommands.find((c: slashCommand) => c.name === interaction.commandName)
 
             if (!cmd) return

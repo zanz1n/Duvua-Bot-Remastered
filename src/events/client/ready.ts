@@ -8,6 +8,7 @@ module.exports = class extends Event {
         })
     }
     run = async () => {
+        await this.client.user.setUsername(this.client.config.name)
         this.client.user.setActivity(`use /help`)
         this.client.registrySlashCommands()
 
