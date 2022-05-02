@@ -4,10 +4,13 @@ import {
     MessageActionRow,
     MessageButton,
     TextChannel,
+    MessageComponentInteraction
 } from 'discord.js'
 
 import Bot from '../../structures/Client'
 import ticket from '../../database/models/ticket'
+import guild from '../../database/models/guild'
+const sleep = (ms: number) => { return new Promise(resolve => setTimeout(resolve, ms)) }
 
 module.exports = class extends slashCommand {
     constructor(client: Bot) {
@@ -39,48 +42,60 @@ module.exports = class extends slashCommand {
         })
     }
     run = async (interaction: sInteraction) => {
+        const guilDb = await guild.findById(interaction.guild.id) ||
+            new guild({
+                _id: interaction.guild.id,
+                name: interaction.guild.name
+            })
+        if (!guilDb.enable_ticket) {
+            const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
+                .setDescription(`**O uso de tickets não é permitido nesse servidor, ${interaction.user}**`)
+            return await interaction.editReply({ content: null, embeds: [embed] })
+        }
+        const dateNow = new Date
         const subCommand = interaction.options.getSubcommand()
 
         if (subCommand === "create") {
-            const buyEmbed = new MessageEmbed().setColor(this.client.config.embed_default_color)
+            const confEmbed = new MessageEmbed().setColor(this.client.config.embed_default_color)
 
-            const channel = interaction.options.getChannel('canal')
+            const channel = await interaction.options.getChannel('canal')
 
             if (channel.type !== "GUILD_TEXT") {
-                buyEmbed.setDescription(`**Você precisa selecionar um canal de texto válido, ${interaction.user}**`)
-                return await interaction.editReply({ content: null, embeds: [buyEmbed] })
+                confEmbed.setDescription(`**Você precisa selecionar um canal de texto válido, ${interaction.user}**`)
+                return await interaction.editReply({ content: null, embeds: [confEmbed] })
             }
 
             const interactiondb = await ticket.findById(interaction.guild.id + interaction.user.id)
 
             if (interactiondb) {
-                buyEmbed.setDescription(`**Você já tem um ticket criado, ${interaction.user}**`)
-                return await interaction.editReply({ embeds: [buyEmbed] })
+                confEmbed.setDescription(`**Você já tem um ticket criado, ${interaction.user}**`)
+                return await interaction.editReply({ embeds: [confEmbed] })
             }
 
-            buyEmbed.setTitle(`
-            🚀 Nitro classic mensal
-                💸 Preço: 5$
-                🛒 Estoque: 15\n🎮 Nitro gaming mensal
-                💸 Preço: 10$
-                🛒 Estoque: 15`)
-                .setColor("#00ff00")
-                .setDescription(`Clique no botão \`"🛒 Comprar"\` para comprar`)
+            confEmbed.setDescription(`**Você deseja realmente abrir o ticket, ${interaction.user}**`)
 
-            const buy = new MessageButton().setCustomId('buy').setLabel('🛒 Comprar').setStyle('PRIMARY')
-            const button = new MessageActionRow().addComponents(buy)
+            const ticketYes = new MessageButton()
+                .setCustomId(`ticketYes${dateNow}`)
+                .setLabel('✅ Sim')
+                .setStyle('SUCCESS')
+            const ticketNo = new MessageButton()
+                .setCustomId(`ticketNo${dateNow}`)
+                .setLabel('❌ Não')
+                .setStyle('DANGER')
+            const button = new MessageActionRow().addComponents(ticketYes, ticketNo)
 
-            interaction.editReply({ embeds: [buyEmbed], components: [button] })
+            await interaction.editReply({ embeds: [confEmbed], components: [button] })
 
-            const filter = (btnInt) => {
+            const filter = (btnInt: MessageComponentInteraction) => {
                 return btnInt.user.id === interaction.user.id
             }
-            const collector = interaction.channel.createMessageComponentCollector({ filter, max: 1, time: 60000 })
+            const collector = interaction.channel.createMessageComponentCollector({ filter, max: 1, time: 20000 })
 
-            collector.on("collect", async (i: sInteraction) => {
+            collector.on("collect", async (i) => {
                 if (i.isButton) {
-                    if (i.customId === "buy") {
-                        buy.setDisabled(true)
+                    if (i.customId === `ticketYes${dateNow}`) {
+                        ticketYes.setDisabled(true)
+                        ticketNo.setDisabled(true)
                         interaction.editReply({ components: [button] })
                         const interactiondb = await ticket.findById(i.guild.id + i.user.id) ||
                             new ticket({
@@ -93,7 +108,9 @@ module.exports = class extends slashCommand {
                                 guildId: i.guild.id
                             })
 
-                        interactiondb.save()
+                        await interactiondb.save().catch((err: Error) => {
+                            console.log("ERRO NA DATABASE", err.name)
+                        })
                         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
 
                         await interaction.guild.channels.create(`Ticket-${interaction.user.tag}`, {
@@ -114,33 +131,70 @@ module.exports = class extends slashCommand {
                         }).then(async (data) => {
                             interactiondb.opened = true
 
-                            const ticketChannel = interaction.guild.channels.cache.get(data.id) as TextChannel
+                            const ticketChannel = await interaction.guild.channels.cache.get(data.id) as TextChannel
 
                             interactiondb.channel = {
                                 id: ticketChannel.id,
                                 name: ticketChannel.name
                             }
-                            interactiondb.save()
+                            await interactiondb.save()
 
                             const goToChannel = new MessageButton()
                                 .setLabel('🚀 Ir')
                                 .setURL(`https://discord.com/channels/${i.guild.id}/${interactiondb.channel.id}`)
                                 .setStyle('LINK')
+                            const cancelBefore = new MessageButton()
+                                .setCustomId(`cancelBefore${dateNow}`)
+                                .setLabel('❌ Cancelar')
+                                .setStyle('DANGER')
 
-                            const goToChannelComponent = new MessageActionRow().addComponents(goToChannel)
+                            const goToChannelComponent = new MessageActionRow().addComponents(goToChannel, cancelBefore)
 
+                            const beforeFilter = (btnInt: MessageComponentInteraction) => {
+                                return btnInt.user.id === interaction.user.id
+                            }
+                            const beforeCollector = await i.channel.createMessageComponentCollector({ filter: beforeFilter, max: 1, time: 20000 })
+
+                            beforeCollector.on("collect", async (iO) => {
+                                console.log("Collected")
+                                if (iO.customId === `cancelBefore${dateNow}`) {
+                                    const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
+                                    const find = await ticket.findById(interaction.guild.id + interaction.user.id)
+                                    if (find) {
+                                        const channel = interaction.guild.channels.cache.get(find.channel.id)
+                                        if (channel) {
+                                            channel.delete().catch(err => {
+                                                console.log(err)
+                                            })
+                                        }
+                                        await ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).then(async () => {
+                                            embed.setDescription(`**Seu ticket foi deletado com sucesso, ${interaction.user}**`)
+                                            return await iO.reply({ embeds: [embed], ephemeral: true })
+                                        }).catch(async (err) => {
+                                            console.log(err)
+                                        })
+
+                                    } else {
+                                        embed.setDescription(`**Você não tem nenhum ticket criado, ${interaction.user}**`)
+                                        return await iO.reply({ embeds: [embed] })
+                                    }
+                                }
+                            })
                             embed.setDescription(`**O seu ticket foi criado, ${interaction.user}**`)
                             await i.reply({ embeds: [embed], components: [goToChannelComponent], ephemeral: true })
 
-                            const cancel = new MessageButton().setCustomId('cancel').setLabel('❌ Cancelar').setStyle('DANGER')
+                            const cancel = new MessageButton()
+                                .setCustomId('cancel')
+                                .setLabel('❌ Cancelar')
+                                .setStyle('DANGER')
                             const button = new MessageActionRow().addComponents(cancel)
 
-                            const filter = (btnInt) => {
+                            const filter = (btnInt: MessageComponentInteraction) => {
                                 return btnInt.user.id === interaction.user.id
                             }
-                            const collector = ticketChannel.createMessageComponentCollector({ filter, max: 1, time: 60000 })
+                            const collector = ticketChannel.createMessageComponentCollector({ filter, max: 1, time: 20000 })
 
-                            collector.on("collect", async (tI: sInteraction) => {
+                            collector.on("collect", async (tI) => {
                                 if (tI.customId === "cancel") {
                                     const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
                                     const find = await ticket.findById(interaction.guild.id + interaction.user.id)
@@ -180,10 +234,15 @@ module.exports = class extends slashCommand {
                             embed.setDescription(`**Não foi possível criar o seu ticket,  ${interaction.user}\nSe você já tem um criado, feche ele**`)
                             interaction.editReply({ embeds: [embed] })
                         })
+                    } else if (i.customId === `ticketNo${dateNow}`) {
+                        ticketYes.setDisabled(true)
+                        ticketNo.setDisabled(true)
+                        interaction.editReply({ components: [button] })
+                        confEmbed.setDescription(`**Seu ticket foi cancelado, ${interaction.user}**`)
+                        return await i.reply({ content: null, embeds: [confEmbed] })
                     }
                 }
             })
-
         }
         else if (subCommand === "delete") {
             const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
@@ -191,23 +250,24 @@ module.exports = class extends slashCommand {
             if (find) {
                 const channel = interaction.guild.channels.cache.get(find.channel.id)
                 if (channel) {
-                    channel.delete().catch(err => {
+                    await ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).then(async () => {
+                        embed.setDescription(`**Seu ticket foi deletado com sucesso, ${interaction.user}**`)
+                        return await interaction.editReply({ embeds: [embed] })
+                    }).catch(async (err: Error) => {
+                        console.log(err)
+                    })
+                    await sleep(1250)
+                    await channel.delete().catch((err: Error) => {
                         console.log(err)
                     })
                 } else {
                     await ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).then(async () => {
                         embed.setDescription(`**O ticket já foi deletado por um moderador, ${interaction.user}**`)
                         return await interaction.editReply({ embeds: [embed] })
-                    }).catch(async (err) => {
+                    }).catch(async (err: Error) => {
                         console.log(err)
                     })
                 }
-                await ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).then(async () => {
-                    embed.setDescription(`**Seu ticket foi deletado com sucesso, ${interaction.user}**`)
-                    return await interaction.editReply({ embeds: [embed] })
-                }).catch(async (err) => {
-                    console.log(err)
-                })
 
             } else {
                 embed.setDescription(`**Você não tem nenhum ticket criado, ${interaction.user}**`)
