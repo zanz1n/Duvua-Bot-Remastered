@@ -21,7 +21,14 @@ module.exports = class extends slashCommand {
                     type: 'SUB_COMMAND',
                     name: "create",
                     description: "Cria um ticket",
-                    options: [{ name: "canal", description: "O canal para criar o ticket", type: 7, required: true }]
+                    options: [
+                        {
+                            name: "canal",
+                            description: "O canal para criar o ticket",
+                            type: 7,
+                            required: true
+                        }
+                    ]
                 },
                 {
                     type: 'SUB_COMMAND',
