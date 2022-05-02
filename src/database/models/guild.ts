@@ -4,6 +4,7 @@ let guildSchema = new Schema({
     _id: { type: String },
     name: { type: String },
     prefix: { type: String, default: "-" },
+    enable_ticket: { type: Boolean, default: true },
     wellcome: {
         channel: { type: String, default: "na" },
         message: { type: String, default: "Seja bem vindo ao servidor" },
