@@ -53,7 +53,7 @@ module.exports = class extends slashCommand {
 
         } else {
             embed.setDescription(`**Você não tem permissão para usar esse comando, ${interaction.user.username}**`)
-            interaction.editReply({ contet: null, embeds: [embed] })
+            interaction.editReply({ content: null, embeds: [embed] })
         }
     }
 }
