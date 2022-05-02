@@ -63,7 +63,7 @@ module.exports = class extends slashCommand {
             })
         } else {
             await interaction.channel.bulkDelete(amount, true).then(async (msgs: any) => {
-                embed.setDescription(`**Foram limpadas ${msgs.size} mensagens no canal de texto!**`)
+                embed.setDescription(`**Foram limpas ${msgs.size} mensagens no canal de texto!**`)
                 await interaction.channel.send({ content: null, embeds: [embed] })
             }).catch(async (err: Error) => {
                 embed.setDescription(`**Não foram possível limpar as mesagens, ${interaction.user.username}**`)
