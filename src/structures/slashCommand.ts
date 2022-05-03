@@ -1,4 +1,11 @@
-import { CacheType, Client, Interaction, InteractionReplyOptions, InteractionDeferReplyOptions, InteractionDeferUpdateOptions } from 'discord.js'
+import {
+    CacheType,
+    Client,
+    Interaction,
+    InteractionReplyOptions,
+    InteractionDeferReplyOptions,
+    InteractionDeferUpdateOptions
+} from 'discord.js'
 import Bot from '../structures/Client'
 
 class slashCommand {
