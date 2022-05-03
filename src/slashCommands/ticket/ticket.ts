@@ -156,7 +156,6 @@ module.exports = class extends slashCommand {
                             const beforeCollector = await i.channel.createMessageComponentCollector({ filter: beforeFilter, max: 1, time: 20000 })
 
                             beforeCollector.on("collect", async (iO) => {
-                                console.log("Collected")
                                 if (iO.customId === `cancelBefore${dateNow}`) {
                                     const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
                                     const find = await ticket.findById(interaction.guild.id + interaction.user.id)
