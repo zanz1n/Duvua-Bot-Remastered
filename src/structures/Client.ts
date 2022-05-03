@@ -2,6 +2,7 @@ import { Client } from 'discord.js'
 import Config from '../../botconfig'
 import fs from 'fs'
 import mongoose from 'mongoose'
+import { Player } from 'discord-player'
 
 const config = new Config()
 
@@ -10,6 +11,7 @@ export default class Bot extends Client {
     public slashCommands: any
     public config: Config
     public db: any
+    public player: Player
 
     constructor(options: any) {
         super(options)
@@ -18,8 +20,10 @@ export default class Bot extends Client {
         this.slashCommands = []
         this.loadSlashCommands()
         this.loadEvents()
+        this.loadPlayer()
 
     }
+
     loadSlashCommands(path = __dirname + '/../slashCommands') {
         const categories = fs.readdirSync(path)
         for (const category of categories) {
@@ -83,6 +87,14 @@ export default class Bot extends Client {
             console.log("[bot-api] Client in producion environment")
             this.application.commands.set(this.slashCommands)
         }
+    }
+    loadPlayer() {
+        this.player = new Player(this, {
+            ytdlOptions: {
+                quality: "highestaudio",
+                highWaterMark: 1 << 25
+            }
+        })
     }
     async connectToDatabase() {
         const connection = await mongoose.connect(config.mongodb_url, {
