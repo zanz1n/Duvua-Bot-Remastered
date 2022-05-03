@@ -27,7 +27,7 @@ module.exports = class extends slashCommand {
         const req = interaction.options.getString('nome').split(/\s+/g).join(" ").toLowerCase()
 
         if (req.lenght > 80) {
-            embed.setDescription(`**Não insira um nome com mais de 80 caracteres ${interaction.user.username}**`)
+            embed.setDescription(`**Não insira um nome com mais de 80 caracteres ${interaction.user}**`)
             return await interaction.editReply({ content: null, embeds: [embed] })
         } else {
             embed.setDescription(`**Procurando por "${req}" [...]**`)
@@ -51,7 +51,7 @@ module.exports = class extends slashCommand {
                 await interaction.editReply({ content: null, embeds: [embed] })
 
             }).catch(async err => {
-                const embed2 = new MessageEmbed().setDescription(`**Sinto muito, mas não foi possível achar um anime com nome ${req}, ${interaction.user.username}**`)
+                const embed2 = new MessageEmbed().setDescription(`**Sinto muito, mas não foi possível achar um anime com nome ${req}, ${interaction.user}**`)
                 if (interaction.user.id === "586600481959182357") embed2.addField("Erro:", `\`\`\`diff\n-${err}\`\`\``)
 
                 await interaction.editReply({ content: null, embeds: [embed2] })
