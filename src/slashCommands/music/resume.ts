@@ -13,7 +13,7 @@ module.exports = class extends slashCommand {
             name: "resume",
             description: "Despausa a reprodução do bot",
             ephemeral: false,
-            disable: false,
+            disabled: false,
         })
     }
     run = async (interaction: sInteraction) => {

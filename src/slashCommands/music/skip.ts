@@ -10,7 +10,7 @@ module.exports = class extends slashCommand {
             name: "skip",
             description: "Pula a música que está tocando",
             ephemeral: false,
-            disable: false,
+            disabled: false,
         })
     }
     run = async (interaction: sInteraction) => {

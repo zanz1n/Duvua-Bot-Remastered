@@ -12,7 +12,7 @@ module.exports = class extends slashCommand {
             name: "songinfo",
             description: "Mostra o som que está tocando",
             ephemeral: false,
-            disable: false,
+            disabled: false,
         })
     }
     run = async (interaction: sInteraction) => {
@@ -31,21 +31,21 @@ module.exports = class extends slashCommand {
 
         const song = queue.current
         const skip = new MessageButton()
-        .setCustomId('skip')
-        .setLabel('⏭️ Skip')
-        .setStyle('PRIMARY')
+            .setCustomId('skip')
+            .setLabel('⏭️ Skip')
+            .setStyle('PRIMARY')
         const stop = new MessageButton()
-        .setCustomId('stop')
-        .setLabel('⏹️ Stop')
-        .setStyle('DANGER')
+            .setCustomId('stop')
+            .setLabel('⏹️ Stop')
+            .setStyle('DANGER')
         const pause = new MessageButton()
-        .setCustomId('pause')
-        .setLabel('⏸️ Pause')
-        .setStyle('PRIMARY')
+            .setCustomId('pause')
+            .setLabel('⏸️ Pause')
+            .setStyle('PRIMARY')
         const resume = new MessageButton()
-        .setCustomId('resume')
-        .setLabel('▶️ Resume')
-        .setStyle('SUCCESS')
+            .setCustomId('resume')
+            .setLabel('▶️ Resume')
+            .setStyle('SUCCESS')
 
         const button = new MessageActionRow().addComponents(skip, stop, pause, resume)
 

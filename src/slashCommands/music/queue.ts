@@ -11,7 +11,7 @@ module.exports = class extends slashCommand {
             name: "queue",
             description: "Exibe o som que está tocando na fila",
             ephemeral: false,
-            disable: false,
+            disabled: false,
         })
     }
     run = async (interaction: sInteraction) => {
