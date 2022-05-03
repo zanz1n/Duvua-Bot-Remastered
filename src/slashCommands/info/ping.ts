@@ -6,7 +6,7 @@ module.exports = class extends slashCommand {
     constructor(client: Bot) {
         super(client, {
             name: "ping",
-            description: "Shows the bot ping and replies with pong",
+            description: "Mostra o ping do bot e responde com pong",
             disabled: false,
             ephemeral: true
         })
