@@ -3,6 +3,8 @@ import Config from '../../botconfig'
 import fs from 'fs'
 import mongoose from 'mongoose'
 import { Player } from 'discord-player'
+import Command from './Command'
+import slashCommand from './slashCommand'
 
 const config = new Config()
 
@@ -19,6 +21,7 @@ export default class Bot extends Client {
         this.commands = []
         this.slashCommands = []
         this.loadSlashCommands()
+        this.loadCommands()
         this.loadEvents()
         this.loadPlayer()
 
@@ -31,36 +34,42 @@ export default class Bot extends Client {
 
             for (const slashCommand of slashCommands) {
                 const slashCommandClass = require(`${path}/${category}/${slashCommand}`)
-                const scmd = new (slashCommandClass)(this)
+                const scmd: slashCommand = new (slashCommandClass)(this)
 
                 if (scmd.disabled) {
+                    console.log(`\x1b[31m[bot-slashCommands] ${scmd.name} disabled\x1b[0m`)
                 } else {
                     this.slashCommands.push(scmd)
+
                     if (this.config.dev_mode) {
                         console.log(`\x1b[35m[bot-slashCommands] ${scmd.name} loaded\x1b[0m`)
                     }
                 }
             }
         }
-        console.log(`[bot-api] All slashCommands loaded`)
+        console.log(`\x1b[33m[bot-api] All slashCommands loaded\x1b[0m`)
     }
     loadCommands(path = __dirname + '/../commands') {
         const categories = fs.readdirSync(path)
         for (const category of categories) {
             const commands = fs.readdirSync(`${path}/${category}`)
 
-            for (const command of commands) {
-                const commandClass = require(`${path}/${category}/${command}`)
-                const cmd = new (commandClass)(this)
+            for (const slashCommand of commands) {
+                const commandClass = require(`${path}/${category}/${slashCommand}`)
+                const cmd: Command = new (commandClass)(this)
 
-                this.commands.push(cmd)
+                if (cmd.disabled) {
+                    console.log(`\x1b[31m[bot-legacyCommands] ${cmd.name} disabled\x1b[0m`)
+                } else {
+                    this.commands.push(cmd)
 
-                if (this.config.dev_mode) {
-                    console.log(`\x1b[35m[bot-Commands] ${cmd.name} loaded\x1b[0m`)
+                    if (this.config.dev_mode) {
+                        console.log(`\x1b[34m[bot-legacyCommands] ${cmd.name} loaded\x1b[0m`)
+                    }
                 }
             }
         }
-        console.log(`[bot-api] All Commands loaded`)
+        console.log(`\x1b[33m[bot-api] All legacyCommands loaded\x1b[0m`)
     }
     loadEvents(path = __dirname + '/../events') {
         const categories = fs.readdirSync(path)
@@ -77,14 +86,14 @@ export default class Bot extends Client {
                 }
             }
         }
-        console.log(`[bot-api] All events loaded`)
+        console.log(`\x1b[33m[bot-api] All events loaded\x1b[0m`)
     }
     registrySlashCommands() {
         if (this.config.dev_mode) {
             console.log("\x1b[33m[bot-api] Client in dev environment\x1b[0m")
             this.guilds.cache.get(this.config.serverid).commands.set(this.slashCommands)
         } else {
-            console.log("[bot-api] Client in producion environment")
+            console.log("\x1b[31m[bot-api] Client in producion environment\x1b[0m")
             this.application.commands.set(this.slashCommands)
         }
     }
@@ -95,6 +104,7 @@ export default class Bot extends Client {
                 highWaterMark: 1 << 25
             }
         })
+        console.log("\x1b[32m[bot-player] connected to the Player\x1b[0m")
     }
     async connectToDatabase() {
         const connection = await mongoose.connect(config.mongodb_url, {

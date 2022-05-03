@@ -1,8 +1,13 @@
 import Event from "../../structures/Event"
 import Bot from "../../structures/Client"
-import { Message, MessageEmbed } from 'discord.js'
+import {
+    CachedManager,
+    Message,
+    MessageEmbed
+} from 'discord.js'
 import guild from '../../database/models/guild'
 import member from '../../database/models/member'
+import Command, { sMessage } from '../../structures/Command'
 
 module.exports = class extends Event {
     constructor(client: Bot) {
@@ -10,7 +15,7 @@ module.exports = class extends Event {
             name: "messageCreate"
         })
     }
-    run = async (message: Message) => {
+    run = async (message: sMessage) => {
         if (message.author.bot) return
         if (this.client.config.dev_mode) console.log(`\x1b[36m[bot-events] Message created\x1b[0m`)
 
@@ -19,7 +24,17 @@ module.exports = class extends Event {
 
         await guilDb.save()
         if (message.content.startsWith(guilDb.prefix)) {
+            const messageSplited = message.content.trim().split(/ +/g)
+            const messageCommand = messageSplited[0].replace(guilDb.prefix, "")
+            const args = message.content.replace(guilDb.prefix + messageCommand, "")
 
+            const cmd = await this.client.commands.find(
+                (cm: Command) => cm.aliases.push(cm.name) &&
+                    cm.aliases.find((st: string) => st === messageCommand) === messageCommand) as Command;
+
+            if (cmd) {
+                cmd.run(message, args)
+            }
         } else {
             const memberDb = await member.findById(message.guild.id + message.author.id) ||
                 new member({
