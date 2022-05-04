@@ -24,9 +24,9 @@ module.exports = class extends slashCommand {
     run = async (interaction: sInteraction) => {
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
 
-        const req = interaction.options.getString('nome').split(/\s+/g).join(" ").toLowerCase()
+        const req = interaction.options.getString('nome').split(/\s+/g).join(" ").toLowerCase() as string
 
-        if (req.lenght > 80) {
+        if (req.length > 80) {
             embed.setDescription(`**Não insira um nome com mais de 80 caracteres ${interaction.user}**`)
             return await interaction.editReply({ content: null, embeds: [embed] })
         } else {
