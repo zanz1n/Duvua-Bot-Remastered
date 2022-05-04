@@ -30,7 +30,7 @@ module.exports = class extends slashCommand {
             if (user.id === this.client.user.id) {
                 embed.setDescription(`**Meu level é uma incógnita, ou talvez ele só não exista \:thinking:**`)
 
-            } else embed.setDescription(`**${user} é um bot, ${interaction.user.username}**`)
+            } else embed.setDescription(`**${user} é um bot, ${interaction.user}**`)
             return interaction.editReply({ content: null, embeds: [embed] })
         }
         const mensioned = await Member.findById(interaction.guild.id + interaction.user.id) ||
