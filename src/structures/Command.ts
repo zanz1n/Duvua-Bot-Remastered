@@ -11,8 +11,6 @@ export interface sMessage extends Message {
     reply(options: InteractionReplyOptions)
     //deferReply(options: InteractionDeferReplyOptions)
     //deferUpdate(options: InteractionDeferUpdateOptions)
-    editReply(options: InteractionReplyOptions)
-    deferReply(content: InteractionReplyOptions)
     deleteReply: any
 }
 
