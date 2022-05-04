@@ -41,7 +41,7 @@ export default class Bot extends Client {
                 } else {
                     this.slashCommands.push(scmd)
 
-                    if (this.config.dev_mode) {
+                    if (this.config.dev_mode && this.config.log_all_loads) {
                         console.log(`\x1b[35m[bot-slashCommands] ${scmd.name} loaded\x1b[0m`)
                     }
                 }
@@ -63,7 +63,7 @@ export default class Bot extends Client {
                 } else {
                     this.commands.push(cmd)
 
-                    if (this.config.dev_mode) {
+                    if (this.config.dev_mode && this.config.log_all_loads) {
                         console.log(`\x1b[34m[bot-legacyCommands] ${cmd.name} loaded\x1b[0m`)
                     }
                 }
@@ -81,7 +81,7 @@ export default class Bot extends Client {
                 const evt = new (eventClass)(this)
 
                 this.on(evt.name, evt.run)
-                if (this.config.dev_mode) {
+                if (this.config.dev_mode && this.config.log_all_loads) {
                     console.log(`\x1b[36m[bot-events] Event ${evt.name} loaded\x1b[0m`)
                 }
             }
@@ -90,10 +90,8 @@ export default class Bot extends Client {
     }
     registrySlashCommands() {
         if (this.config.dev_mode) {
-            console.log("\x1b[33m[bot-api] Client in dev environment\x1b[0m")
             this.guilds.cache.get(this.config.serverid).commands.set(this.slashCommands)
         } else {
-            console.log("\x1b[31m[bot-api] Client in producion environment\x1b[0m")
             this.application.commands.set(this.slashCommands)
         }
     }
