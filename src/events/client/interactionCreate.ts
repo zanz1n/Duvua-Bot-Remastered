@@ -13,13 +13,10 @@ module.exports = class extends Event {
         if (interaction.user.bot) return
 
         if (interaction.isCommand()) {
-            if (this.client.config.dev_mode) console.log(`\x1b[36m[bot-events] Command Interaction created\x1b[0m`)
             const cmd = await this.client.slashCommands.find((c: slashCommand) => c.name === interaction.commandName)
 
             if (!cmd) return
-            if (cmd.disabled) {
-                return interaction.reply("Commando Desabilitado")
-            }
+
             if (cmd.ephemeral) {
                 await interaction.deferReply({ ephemeral: true })
             } else {
@@ -35,14 +32,17 @@ module.exports = class extends Event {
         }
         if (interaction.isButton()) {
             if (interaction.customId === "permaTicketButton") {
-                await interaction.deferReply()
+                await interaction.deferReply({})
                 const permaTicket = require('../../structures/handleEternalTickets')
                 const permaTicketHandler = new permaTicket(this.client)
                 permaTicketHandler.run(interaction)
             } else {
-                const permaMusicButton = require('../../structures/handleMusicButtons')
-                const permaMusicButtonHandler = new permaMusicButton(this.client)
-                permaMusicButtonHandler.run(interaction)
+                const cmd = await this.client.slashCommands.find((c: slashCommand) => c.name === interaction.customId)
+                if (!cmd) return
+                else {
+                    await interaction.deferReply({})
+                    cmd.run(interaction)
+                }
             }
         }
     }
