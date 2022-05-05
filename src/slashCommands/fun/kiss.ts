@@ -1,6 +1,11 @@
 import slashCommand, { sInteraction } from '../../structures/slashCommand'
 import Bot from '../../structures/Client'
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js'
+import {
+    MessageActionRow,
+    MessageButton,
+    MessageEmbed,
+    MessageComponentInteraction
+} from 'discord.js'
 
 module.exports = class extends slashCommand {
     constructor(client: Bot) {
@@ -50,7 +55,7 @@ module.exports = class extends slashCommand {
             )
             await interaction.editReply({ embeds: [embed], components: [button] })
 
-            const filter = (btnInt) => {
+            const filter = (btnInt: MessageComponentInteraction) => {
                 return btnInt.user.id === user.id
             }
             const collector = interaction.channel.createMessageComponentCollector({ filter, max: 1, time: 90000 })

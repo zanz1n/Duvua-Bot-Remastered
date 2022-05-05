@@ -2,8 +2,6 @@ import slashCommand, { sInteraction } from "../../structures/slashCommand"
 import Bot from "../../structures/Client"
 import {
     MessageEmbed,
-    MessageActionRow,
-    MessageButton,
     Permissions
 } from "discord.js"
 
@@ -12,8 +10,8 @@ module.exports = class extends slashCommand {
         super(client, {
             name: "stop",
             description: "Para o bot e limpa a fila de reprodução",
-            ephemeral: false,
             disabled: false,
+            aliases: ['st']
         })
     }
     run = async (interaction: sInteraction) => {

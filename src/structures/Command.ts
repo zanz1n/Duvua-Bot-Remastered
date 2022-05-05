@@ -1,4 +1,5 @@
 import {
+    CacheType,
     Client,
     InteractionDeferReplyOptions,
     InteractionDeferUpdateOptions,

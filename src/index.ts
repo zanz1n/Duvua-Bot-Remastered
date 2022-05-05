@@ -2,6 +2,7 @@ console.log(`\x1b[33m[bot-api] Starting [...]\x1b[0m`)
 
 import Bot from './structures/Client'
 import { Intents } from 'discord.js'
+import 'discord-player/smoothVolume'
 
 const client = new Bot({
     intents: [

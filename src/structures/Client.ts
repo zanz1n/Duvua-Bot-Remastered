@@ -5,6 +5,7 @@ import mongoose from 'mongoose'
 import { Player } from 'discord-player'
 import Command from './Command'
 import slashCommand from './slashCommand'
+import 'discord-player/smoothVolume'
 
 const config = new Config()
 
