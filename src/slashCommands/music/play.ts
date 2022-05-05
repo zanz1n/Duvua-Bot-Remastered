@@ -25,7 +25,6 @@ module.exports = class extends slashCommand {
         })
     }
     run = async (interaction: sInteraction) => {
-        const dateNow = new Date
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
         const member = interaction.member as any
 
@@ -33,7 +32,7 @@ module.exports = class extends slashCommand {
             embed.setDescription(`**Você prefisa estart em um canal de voz para tocar uma música, ${interaction.user}**`)
             return interaction.editReply({ content: null, embeds: [embed] })
         }
-        const queue = await this.client.player.createQueue(interaction.guild)
+        const queue = this.client.player.createQueue(interaction.guild)
         if (!queue.connection) await queue.connect(member.voice.channel)
 
         if (interaction.options.getString("som").length > 80) {
@@ -60,7 +59,7 @@ module.exports = class extends slashCommand {
         }
 
         const song = result.tracks[0]
-        await queue.addTrack(song)
+        queue.addTrack(song)
 
         embed.setDescription(`**[${song.title}](${song.url})** foi adicionada a playlist\n\n**Duração: [${song.duration}]**`)
             .setThumbnail(song.thumbnail)
