@@ -97,7 +97,7 @@ module.exports = class extends slashCommand {
                     }).then(async (data) => {
                         interactiondb.opened = true
 
-                        const ticketChannel = await interaction.guild.channels.cache.get(data.id) as TextChannel
+                        const ticketChannel = interaction.guild.channels.cache.get(data.id) as TextChannel
 
                         interactiondb.channel = {
                             id: ticketChannel.id,
@@ -119,7 +119,7 @@ module.exports = class extends slashCommand {
                         const beforeFilter = (btnInt: MessageComponentInteraction) => {
                             return btnInt.user.id === interaction.user.id
                         }
-                        const beforeCollector = await i.channel.createMessageComponentCollector({ filter: beforeFilter, max: 1, time: 20000 })
+                        const beforeCollector = i.channel.createMessageComponentCollector({ filter: beforeFilter, max: 1, time: 20000 })
 
                         beforeCollector.on("collect", async (iO) => {
                             if (iO.customId === `cancelBefore${dateNow}`) {
@@ -194,6 +194,7 @@ module.exports = class extends slashCommand {
                         const find = await ticket.findById(interaction.guild.id + interaction.user.id)
                         if (find) {
                             await ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).catch(async (err) => {
+                                console.log(err)
                             })
                         }
                         embed.setDescription(`**Não foi possível criar o seu ticket,  ${interaction.user}\nSe você já tem um criado, feche ele**`)
