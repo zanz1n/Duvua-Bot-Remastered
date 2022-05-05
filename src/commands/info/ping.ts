@@ -10,7 +10,7 @@ module.exports = class extends Command {
             name: "ping",
             description: "Mostra o ping do bot e responde com pong",
             disabled: false,
-            aliases: ['p'],
+            aliases: ['pn'],
         })
     }
     run = async (message: sMessage) => {
