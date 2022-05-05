@@ -20,9 +20,9 @@ module.exports = class extends slashCommand {
         })
     }
     run = async (interaction: sInteraction) => {
-        let embed = new MessageEmbed()
+        const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
         const user = interaction.options.getUser('usuario') || interaction.user
-        const random = (min, max) => Math.floor(Math.random() * (max - min) + min)
+        const random = (min: number, max: number) => Math.floor(Math.random() * (max - min) + min)
 
         const links = require('../../utils/gifs').gifs_a
 
