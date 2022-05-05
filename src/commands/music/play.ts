@@ -19,7 +19,7 @@ module.exports = class extends Command {
     run = async (message: sMessage, args: string) => {
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
         if (!args || args.length <= 1) {
-            embed.setDescription(`Você precisa inserir o nome de uma música, ${message.author}`)
+            embed.setDescription(`**Você precisa inserir o nome de uma música, ${message.author}**`)
             return await message.reply({ embeds: [embed] })
         } else {
             if (args.length > 80) {
