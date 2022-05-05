@@ -3,7 +3,8 @@ import Bot from '../../structures/Client'
 import {
     MessageActionRow,
     MessageButton,
-    MessageEmbed
+    MessageEmbed,
+    MessageComponentInteraction
 } from 'discord.js'
 
 module.exports = class extends Command {
@@ -16,7 +17,7 @@ module.exports = class extends Command {
         })
     }
     run = async (message: sMessage) => {
-        const user = message.mentions.users.first() || message.author
+        const user = message.mentions.users.first()
 
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
 
@@ -24,6 +25,10 @@ module.exports = class extends Command {
 
         const links = require('../../utils/gifs').gifs_a
 
+        if (!user) {
+            embed.setDescription(`**Marque um usuário válido na mensagem, ${message.author}**`)
+            return await message.reply({ embeds: [embed] })
+        }
         if (user.id === this.client.user.id) {
             embed.setDescription(`**Vamos manter nossa relação como uma amizade, ok ${message.author}?**`)
             return await message.reply({ embeds: [embed] })
@@ -47,7 +52,7 @@ module.exports = class extends Command {
             )
             await message.reply({ embeds: [embed], components: [button] })
 
-            const filter = (btnInt) => {
+            const filter = (btnInt: MessageComponentInteraction) => {
                 return btnInt.user.id === user.id
             }
             const collector = message.channel.createMessageComponentCollector({ filter, max: 1, time: 90000 })
