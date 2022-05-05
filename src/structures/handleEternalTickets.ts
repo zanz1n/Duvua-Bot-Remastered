@@ -17,6 +17,8 @@ module.exports = class extends slashCommand {
         })
     }
     run = async (interaction: sInteraction) => {
+        const sleep = (ms: number) => { return new Promise(resolve => setTimeout(resolve, ms)) }
+
         const guilDb = await guild.findById(interaction.guild.id) ||
             new guild({
                 _id: interaction.guild.id,
@@ -166,14 +168,15 @@ module.exports = class extends slashCommand {
                                 if (find) {
                                     const channel = interaction.guild.channels.cache.get(find.channel.id)
                                     if (channel) {
+                                        embed.setDescription(`**Seu ticket foi deletado com sucesso, ${interaction.user}**`)
+                                        await ticketChannel.send({ embeds: [embed] })
+                                        await sleep(2000)
                                         channel.delete().catch(err => {
                                             console.log(err)
                                         })
+                                        return
                                     }
-                                    await ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).then(async () => {
-                                        embed.setDescription(`**Seu ticket foi deletado com sucesso, ${interaction.user}**`)
-                                        return await i.channel.send({ embeds: [embed] })
-                                    }).catch(async (err) => {
+                                    await ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).catch(async (err) => {
                                         console.log(err)
                                     })
 
@@ -205,7 +208,7 @@ module.exports = class extends slashCommand {
                     ticketNo.setDisabled(true)
                     interaction.editReply({ components: [button] })
                     confEmbed.setDescription(`**Seu ticket foi cancelado, ${interaction.user}**`)
-                    return await i.reply({ content: null, embeds: [confEmbed] })
+                    return await i.reply({ content: null, embeds: [confEmbed], ephemeral: true })
                 }
             }
         })

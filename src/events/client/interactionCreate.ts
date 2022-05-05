@@ -32,7 +32,7 @@ module.exports = class extends Event {
         }
         if (interaction.isButton()) {
             if (interaction.customId === "permaTicketButton") {
-                await interaction.deferReply({})
+                await interaction.deferReply({ ephemeral: true })
                 const permaTicket = require('../../structures/handleEternalTickets')
                 const permaTicketHandler = new permaTicket(this.client)
                 permaTicketHandler.run(interaction)
