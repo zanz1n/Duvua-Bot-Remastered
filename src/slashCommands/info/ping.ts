@@ -1,5 +1,10 @@
 import slashCommand, { sInteraction } from '../../structures/slashCommand'
-import { MessageEmbed, MessageActionRow, MessageButton, Permissions } from 'discord.js'
+import {
+    MessageEmbed,
+    MessageActionRow,
+    MessageButton,
+    Permissions
+} from 'discord.js'
 import Bot from '../../structures/Client'
 
 module.exports = class extends slashCommand {
