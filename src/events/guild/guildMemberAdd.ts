@@ -30,7 +30,7 @@ module.exports = class extends Event {
         const type = guilDb.wellcome.type
         if (type === 'embed') {
             const embed = new MessageEmbed()
-                .setTitle(`Wellcome ${member.user.username}`)
+                .setTitle(`Bem vindo ${member.user.username}`)
                 .setThumbnail(member.displayAvatarURL({ dynamic: false, format: 'png' }))
                 .setDescription(guilDb.wellcome.message)
             channel.send({ embeds: [embed] })
