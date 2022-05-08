@@ -83,12 +83,14 @@ module.exports = class extends slashCommand {
 
         const confirmTransfer = new MessageButton()
             .setCustomId(`confirmTransfer${dateNow}`)
-            .setLabel('✅ Sim')
+            .setEmoji(`✅`)
+            .setLabel('Sim')
             .setStyle('SUCCESS')
 
         const denyTransfer = new MessageButton()
             .setCustomId(`denyTransfer${dateNow}`)
-            .setLabel('❌ Não')
+            .setEmoji(`❌`)
+            .setLabel('Não')
             .setStyle('DANGER')
 
         const transferComp = new MessageActionRow().addComponents(confirmTransfer, denyTransfer)

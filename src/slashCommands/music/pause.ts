@@ -31,7 +31,11 @@ module.exports = class extends slashCommand {
 
         queue.setPaused(true)
 
-        const resume = new MessageButton().setCustomId('resume').setLabel('▶️ Resume').setStyle('SUCCESS')
+        const resume = new MessageButton()
+            .setCustomId('resume')
+            .setEmoji(`▶️`)
+            .setLabel('Resume')
+            .setStyle('SUCCESS')
         const button = new MessageActionRow().addComponents(resume)
         embed.setDescription(`**Fila pausada por ${interaction.user}**\nUse /resume para continuar a reprodução`)
         await interaction.editReply({ content: null, embeds: [embed], components: [button] })

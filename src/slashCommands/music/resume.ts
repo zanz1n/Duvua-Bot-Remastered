@@ -30,7 +30,11 @@ module.exports = class extends slashCommand {
         }
 
         queue.setPaused(false)
-        const pause = new MessageButton().setCustomId('pause').setLabel('⏸️ Pause').setStyle('PRIMARY')
+        const pause = new MessageButton()
+            .setCustomId('pause')
+            .setEmoji(`⏸️`)
+            .setLabel('Pause')
+            .setStyle('PRIMARY')
         const button = new MessageActionRow().addComponents(pause)
         embed.setDescription(`**Fila despausado por ${interaction.user}**\nUse /pause para pausá-lo`)
         await interaction.editReply({ content: null, embeds: [embed], components: [button] })

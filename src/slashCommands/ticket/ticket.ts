@@ -76,11 +76,13 @@ module.exports = class extends slashCommand {
 
             const ticketYes = new MessageButton()
                 .setCustomId(`ticketYes${dateNow}`)
-                .setLabel('✅ Sim')
+                .setEmoji(`✅`)
+                .setLabel('Sim')
                 .setStyle('SUCCESS')
             const ticketNo = new MessageButton()
                 .setCustomId(`ticketNo${dateNow}`)
-                .setLabel('❌ Não')
+                .setEmoji(`❌`)
+                .setLabel('Não')
                 .setStyle('DANGER')
             const button = new MessageActionRow().addComponents(ticketYes, ticketNo)
 
@@ -140,12 +142,14 @@ module.exports = class extends slashCommand {
                             await interactiondb.save()
 
                             const goToChannel = new MessageButton()
-                                .setLabel('🚀 Ir')
+                                .setEmoji(`🚀`)
+                                .setLabel('Ir')
                                 .setURL(`https://discord.com/channels/${i.guild.id}/${interactiondb.channel.id}`)
                                 .setStyle('LINK')
                             const cancelBefore = new MessageButton()
                                 .setCustomId(`cancelBefore${dateNow}`)
-                                .setLabel('❌ Cancelar')
+                                .setEmoji(`❌`)
+                                .setLabel('Cancelar')
                                 .setStyle('DANGER')
 
                             const goToChannelComponent = new MessageActionRow().addComponents(goToChannel, cancelBefore)
@@ -184,7 +188,8 @@ module.exports = class extends slashCommand {
 
                             const cancel = new MessageButton()
                                 .setCustomId('cancel')
-                                .setLabel('❌ Cancelar')
+                                .setEmoji(`❌`)
+                                .setLabel('Cancelar')
                                 .setStyle('DANGER')
                             const button = new MessageActionRow().addComponents(cancel)
 

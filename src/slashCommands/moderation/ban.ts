@@ -33,8 +33,16 @@ module.exports = class extends slashCommand {
             return await interaction.editReply({ embeds: [embed] })
         }
 
-        const yes = new MessageButton().setCustomId('yes').setLabel('🔨 Banir').setStyle('DANGER')
-        const no = new MessageButton().setCustomId('no').setLabel('❌ Cancelar').setStyle('PRIMARY')
+        const yes = new MessageButton()
+            .setCustomId('yes')
+            .setEmoji(`🔨`)
+            .setLabel('Banir')
+            .setStyle('DANGER')
+        const no = new MessageButton()
+            .setCustomId('no')
+            .setEmoji(`❌`)
+            .setLabel('Cancelar')
+            .setStyle('PRIMARY')
 
         const button = new MessageActionRow().addComponents(yes, no)
 
