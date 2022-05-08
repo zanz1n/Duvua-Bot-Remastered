@@ -26,7 +26,7 @@ module.exports = class extends slashCommand {
     }
     run = async (interaction: sInteraction) => {
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
-        const user = interaction.options.getUser('usuario') || interaction.user
+        const user = interaction.options.getUser('usuario')
         const random = (min: number, max: number) => Math.floor(Math.random() * (max - min) + min)
 
         const links = require('../../utils/gifs').gifs_a
@@ -50,20 +50,19 @@ module.exports = class extends slashCommand {
             embed.setTitle(`O amor está no ar!  \:heart:`).setDescription(`${interaction.user} beijou ${user}`).setImage(links[random(0, links.length)])
                 .setFooter({ text: `Requisitado por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() }).setTimestamp()
 
-            const button = new MessageActionRow().addComponents(
-                new MessageButton()
-                    .setCustomId(`repeat${dateNow}`)
-                    .setEmoji(`🔁`)
-                    .setLabel('Retribuir')
-                    .setStyle('PRIMARY')
-                    .setDisabled(false),
-                new MessageButton()
-                    .setCustomId(`reject${dateNow}`)
-                    .setEmoji(`❌`)
-                    .setLabel('Recusar')
-                    .setStyle('PRIMARY')
-                    .setDisabled(false)
-            )
+            const repeat = new MessageButton()
+                .setCustomId(`repeat${dateNow}`)
+                .setEmoji(`🔁`)
+                .setLabel('Retribuir')
+                .setStyle('PRIMARY')
+
+            const reject = new MessageButton()
+                .setCustomId(`reject${dateNow}`)
+                .setEmoji(`❌`)
+                .setLabel('Recusar')
+                .setStyle('PRIMARY')
+
+            const button = new MessageActionRow().addComponents(repeat, reject)
             await interaction.editReply({ embeds: [embed], components: [button] })
 
             const filter = (btnInt: MessageComponentInteraction) => {
@@ -73,6 +72,10 @@ module.exports = class extends slashCommand {
 
             collector.on("collect", async (i) => {
                 if (i.customId === `repeat${dateNow}`) {
+                    repeat.setDisabled(true)
+                    reject.setDisabled(true)
+                    interaction.editReply({ components: [button] })
+
                     const embedRetribuir = new MessageEmbed().setTitle(`As coisas estão pegando fogo aqui!  \:fire:`)
                         .setDescription(`${i.user} retribuiu o beijo de ${interaction.user}\nSerá que temos um novo casal aqui?  \:heart:`)
                         .setImage(links[random(0, links.length)])
@@ -80,6 +83,10 @@ module.exports = class extends slashCommand {
                     await i.reply({ embeds: [embedRetribuir] })
                 }
                 else if (i.customId === `reject${dateNow}`) {
+                    repeat.setDisabled(true)
+                    reject.setDisabled(true)
+                    interaction.editReply({ components: [button] })
+
                     const slap = require('../../utils/gifs').gifs_b
                     const embedRetribuir = new MessageEmbed().setTitle(`Quem nunca levou um fora, né ${interaction.user.username}`)
                         .setDescription(`${i.user} negou o beijo de ${interaction.user}  \:broken_heart:`)

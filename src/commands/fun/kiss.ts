@@ -47,21 +47,20 @@ module.exports = class extends Command {
             embed.setTitle(`O amor está no ar!  \:heart:`).setDescription(`${message.author} beijou ${user}`).setImage(links[random(0, links.length)])
                 .setFooter({ text: `Requisitado por ${message.author.username}`, iconURL: message.author.displayAvatarURL() }).setTimestamp()
 
-            const button = new MessageActionRow().addComponents(
-                new MessageButton()
-                    .setCustomId(`repeat${dateNow}`)
-                    .setEmoji(`🔁`)
-                    .setLabel('Retribuir')
-                    .setStyle('PRIMARY')
-                    .setDisabled(false),
-                new MessageButton()
-                    .setCustomId(`reject${dateNow}`)
-                    .setEmoji(`❌`)
-                    .setLabel('Recusar')
-                    .setStyle('PRIMARY')
-                    .setDisabled(false)
-            )
-            await message.reply({ embeds: [embed], components: [button] })
+            const repeat = new MessageButton()
+                .setCustomId(`repeat${dateNow}`)
+                .setEmoji(`🔁`)
+                .setLabel('Retribuir')
+                .setStyle('PRIMARY')
+
+            const reject = new MessageButton()
+                .setCustomId(`reject${dateNow}`)
+                .setEmoji(`❌`)
+                .setLabel('Recusar')
+                .setStyle('PRIMARY')
+
+            const button = new MessageActionRow().addComponents(repeat, reject)
+            const msg = await message.reply({ embeds: [embed], components: [button] })
 
             const filter = (btnInt: MessageComponentInteraction) => {
                 return btnInt.user.id === user.id
@@ -70,6 +69,10 @@ module.exports = class extends Command {
 
             collector.on("collect", async (i) => {
                 if (i.customId === `repeat${dateNow}`) {
+                    repeat.setDisabled(true)
+                    reject.setDisabled(true)
+                    msg.edit({ components: [button] })
+
                     const embedRetribuir = new MessageEmbed().setTitle(`As coisas estão pegando fogo aqui!  \:fire:`)
                         .setDescription(`${i.user} retribuiu o beijo de ${message.author}\nSerá que temos um novo casal aqui?  \:heart:`)
                         .setImage(links[random(0, links.length)])
@@ -77,6 +80,10 @@ module.exports = class extends Command {
                     await i.reply({ embeds: [embedRetribuir] })
                 }
                 else if (i.customId === `reject${dateNow}`) {
+                    repeat.setDisabled(true)
+                    reject.setDisabled(true)
+                    msg.edit({ components: [button] })
+
                     const slap = require('../../utils/gifs').gifs_b
                     const embedRetribuir = new MessageEmbed().setTitle(`Quem nunca levou um fora, né ${message.author.username}`)
                         .setDescription(`${i.user} negou o beijo de ${message.author}  \:broken_heart:`)
