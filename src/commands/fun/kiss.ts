@@ -43,12 +43,23 @@ module.exports = class extends Command {
             return await message.reply({ embeds: [embed] })
         }
         else {
+            const dateNow = new Date
             embed.setTitle(`O amor está no ar!  \:heart:`).setDescription(`${message.author} beijou ${user}`).setImage(links[random(0, links.length)])
                 .setFooter({ text: `Requisitado por ${message.author.username}`, iconURL: message.author.displayAvatarURL() }).setTimestamp()
 
             const button = new MessageActionRow().addComponents(
-                new MessageButton().setCustomId('1').setLabel('🔁 Retribuir').setStyle('PRIMARY').setDisabled(false),
-                new MessageButton().setCustomId('2').setLabel('❌ Recusar').setStyle('PRIMARY').setDisabled(false)
+                new MessageButton()
+                    .setCustomId(`repeat${dateNow}`)
+                    .setEmoji(`🔁`)
+                    .setLabel('Retribuir')
+                    .setStyle('PRIMARY')
+                    .setDisabled(false),
+                new MessageButton()
+                    .setCustomId(`reject${dateNow}`)
+                    .setEmoji(`❌`)
+                    .setLabel('Recusar')
+                    .setStyle('PRIMARY')
+                    .setDisabled(false)
             )
             await message.reply({ embeds: [embed], components: [button] })
 
@@ -58,14 +69,14 @@ module.exports = class extends Command {
             const collector = message.channel.createMessageComponentCollector({ filter, max: 1, time: 90000 })
 
             collector.on("collect", async (i) => {
-                if (i.customId === '1') {
+                if (i.customId === `repeat${dateNow}`) {
                     const embedRetribuir = new MessageEmbed().setTitle(`As coisas estão pegando fogo aqui!  \:fire:`)
                         .setDescription(`${i.user} retribuiu o beijo de ${message.author}\nSerá que temos um novo casal aqui?  \:heart:`)
                         .setImage(links[random(0, links.length)])
 
                     await i.reply({ embeds: [embedRetribuir] })
                 }
-                else if (i.customId === '2') {
+                else if (i.customId === `reject${dateNow}`) {
                     const slap = require('../../utils/gifs').gifs_b
                     const embedRetribuir = new MessageEmbed().setTitle(`Quem nunca levou um fora, né ${message.author.username}`)
                         .setDescription(`${i.user} negou o beijo de ${message.author}  \:broken_heart:`)
