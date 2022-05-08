@@ -1,8 +1,6 @@
 import slashCommand, { sInteraction } from '../../structures/slashCommand'
 import {
     MessageEmbed,
-    MessageActionRow,
-    MessageButton,
     Permissions
 } from 'discord.js'
 import Bot from '../../structures/Client'
@@ -20,29 +18,53 @@ module.exports = class extends slashCommand {
                     type: 'SUB_COMMAND',
                     name: 'wellcome',
                     description: "Altera a mensagem de boas vindas do server",
-                    options: [{
-                        name: "canal",
-                        description: "O canal que você deseja usar as mensagens",
-                        type: 7,
-                        required: true
-                    },
-                    {
-                        name: "mensagem",
-                        description: "A mensagem de boas vindas que você deseja exibir",
-                        type: 3,
-                        required: true
-                    }]
+                    options: [
+                        {
+                            name: "canal",
+                            description: "O canal que você deseja usar as mensagens",
+                            type: 7,
+                            required: true
+                        },
+                        {
+                            name: "mensagem",
+                            description: "A mensagem de boas vindas que você deseja exibir",
+                            type: 3,
+                            required: true
+                        },
+                        {
+                            name: "tipo",
+                            description: "O tipo da mensagem de boas vindas [mensagem, embed, imagem]",
+                            type: 3,
+                            required: true,
+                            choices: [
+                                {
+                                    name: "Mensagem",
+                                    value: "message"
+                                },
+                                {
+                                    name: "Embed",
+                                    value: "embed"
+                                },
+                                {
+                                    name: "Imagem",
+                                    value: "image"
+                                }
+                            ]
+                        }
+                    ]
                 },
                 {
                     type: 'SUB_COMMAND',
                     name: 'prefix',
                     description: "Altera o prefixo do bot para o servidor",
-                    options: [{
-                        name: "prefixo",
-                        description: "O prefixo que deseja que o bot use",
-                        type: 3,
-                        required: true
-                    }]
+                    options: [
+                        {
+                            name: "prefixo",
+                            description: "O prefixo que deseja que o bot use",
+                            type: 3,
+                            required: true
+                        }
+                    ]
                 },
                 {
                     type: 'SUB_COMMAND',
@@ -53,7 +75,7 @@ module.exports = class extends slashCommand {
                     type: 'SUB_COMMAND',
                     name: 'enablewellcome',
                     description: "Habilita a mensagem de bem-vindo no server"
-                }
+                },
             ]
         })
     }
@@ -70,7 +92,9 @@ module.exports = class extends slashCommand {
 
         await guilDb.save()
         if (subCommand === "wellcome") {
+            const type = interaction.options.getString('tipo')
             const channel = interaction.options.getChannel("canal")
+
             if (channel.type !== "GUILD_TEXT") {
                 embed.setDescription(`**Você precisa selecionar um canal de texto válido, ${interaction.user.username}**`)
                 return await interaction.editReply({ content: null, embeds: [embed] })
@@ -79,6 +103,7 @@ module.exports = class extends slashCommand {
                 channel: channel.id,
                 message: interaction.options.getString('mensagem'),
                 enabled: true,
+                type
             }
             await guilDb.save()
             embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user.username}**`)
