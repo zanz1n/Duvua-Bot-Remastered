@@ -86,8 +86,7 @@ module.exports = class extends slashCommand {
                     .addField("\:globe_with_meridians: clear", find("clear"), true).addField("\:globe_with_meridians: ban", find("ban"), true)
                     .addField("\:globe_with_meridians: config wellcome", "Altera a mensagem de boas vindas", true)
                     .addField("\:globe_with_meridians: config prefix", "Altera o prefixo do bot no servidor", true)
-
-                    .addField("\:information_source: Dica", "**Nos comandos say e embed, use /n para quebrar linha.**")
+                //.addField("\:information_source: Dica", "**Nos comandos say e embed, use /n para quebrar linha.**")
 
                 i.deferUpdate()
                 interaction.editReply({ content: null, embeds: [modUtilEmbed] })
