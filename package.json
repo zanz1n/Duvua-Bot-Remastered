@@ -4,11 +4,12 @@
   "main": "src/index.ts",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "test": "ts-node src/index.ts",
     "dev": "nodemon --exec ts-node src/index.ts",
     "prod": "node dist/src/index.js",
     "build": "tsc",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "start": "tsc && node dist/src/index.js"
   },
   "dependencies": {
     "@discordjs/opus": "^0.7.0",
