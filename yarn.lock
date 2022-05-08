@@ -495,7 +495,7 @@ canvacord@^5.2.3:
     moment "^2.29.1"
     moment-duration-format "^2.3.2"
 
-canvas@^2.2.0, canvas@^2.8.0:
+canvas@^2.2.0, canvas@^2.6.1, canvas@^2.8.0, canvas@^2.9.1:
   version "2.9.1"
   resolved "https://registry.yarnpkg.com/canvas/-/canvas-2.9.1.tgz#58ec841cba36cef0675bc7a74ebd1561f0b476b0"
   integrity sha512-vSQti1uG/2gjv3x6QLOZw7TctfufaerTWbVe+NSduHxxLGB+qf3kFgQ6n66DSnuoINtVUjrLLIK2R+lxrBG07A==
@@ -782,6 +782,16 @@ discord-api-types@^0.32.0:
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.32.0.tgz#e3880d6695372070b7ddbbd2899b2ed6ffd9dea0"
   integrity sha512-i6HyCwWRocvtIcM7hamI3eQTCxLN/UvWtm/JktaXRSWDmASfhHam2juhej+e4U/Q/Fni1uUlyloMCBTL04Dl6Q==
 
+discord-canvas@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/discord-canvas/-/discord-canvas-1.4.1.tgz#afd06224fe23cecd6fb8c3456af7a1a0f65b08a5"
+  integrity sha512-0Ee1mvmalw1Nz60MwU6SxUdFNUDrJwx8II4JxaDFqw/2nEPav7PB8giQxDPaCgcyFOAvReQJFSQ66FCr+m1O8g==
+  dependencies:
+    canvas "^2.6.1"
+    fortnite "^4.3.2"
+    fortnite-9812 "^1.0.4"
+    fs "^0.0.1-security"
+
 discord-player@^5.2.2:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/discord-player/-/discord-player-5.2.2.tgz#ecc2396b787e78dea01006def14ed9280d6702ff"
@@ -981,6 +991,20 @@ form-data@~2.3.2:
     combined-stream "^1.0.6"
     mime-types "^2.1.12"
 
+fortnite-9812@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/fortnite-9812/-/fortnite-9812-1.0.4.tgz#114a7a07f76680aebe63e6348e407c2b67d7f29b"
+  integrity sha512-TkdbPT1oTQ/GncnC5Sf4dVo6CLo4NJAtiU17rOUetcZ59nLAgNhceNkSqgMCYdYx6gCEB1A/9pYzm/JKOmgRcA==
+  dependencies:
+    node-fetch "^2.3.0"
+
+fortnite@^4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/fortnite/-/fortnite-4.3.2.tgz#5d023bf9803e8ad438c24b63e5f43a7c904d569d"
+  integrity sha512-6BReElBAwP/3Gq6zEBn9gdQzrzWpMlumY9IF0suZgDshbzsS8dCDuV8JszDl1l1PVJwtzm2uexfUo9YtUqUV6Q==
+  dependencies:
+    node-fetch "^2.3.0"
+
 fs-minipass@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/fs-minipass/-/fs-minipass-2.1.0.tgz#7f5036fdbf12c63c169190cbe4199c852271f9fb"
@@ -992,6 +1016,11 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
   integrity sha1-FQStJSMVjKpA20onh8sBQRmU6k8=
+
+fs@^0.0.1-security:
+  version "0.0.1-security"
+  resolved "https://registry.yarnpkg.com/fs/-/fs-0.0.1-security.tgz#8a7bd37186b6dddf3813f23858b57ecaaf5e41d4"
+  integrity sha1-invTcYa23d84E/I4WLV+yq9eQdQ=
 
 fsevents@~2.3.2:
   version "2.3.2"
@@ -1624,7 +1653,7 @@ node-addon-api@^4.2.0:
   resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-4.3.0.tgz#52a1a0b475193e0928e98e0426a0d1254782b77f"
   integrity sha512-73sE9+3UaLYYFmDsFZnqCInzPyh3MqIwZO9cw58yIqAZhONrrabrYyYe3TuIqtIiOuTXVhsGau8hcrhhwSsDIQ==
 
-node-fetch@2.6.7, node-fetch@^2.6.1, node-fetch@^2.6.5, node-fetch@^2.6.7:
+node-fetch@2.6.7, node-fetch@^2.3.0, node-fetch@^2.6.1, node-fetch@^2.6.5, node-fetch@^2.6.7:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
   integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
