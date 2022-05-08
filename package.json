@@ -9,7 +9,8 @@
     "prod": "node dist/src/index.js",
     "build": "tsc",
     "watch": "tsc -w",
-    "start": "tsc && node dist/src/index.js"
+    "start": "tsc && node dist/src/index.js",
+    "ndmprod": "nodemon dist/src/index.js"
   },
   "dependencies": {
     "@discordjs/opus": "^0.7.0",
