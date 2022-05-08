@@ -3,4 +3,5 @@ dist
 .env
 *.log
 
+autodeploy.sh
 botconfig.ts
