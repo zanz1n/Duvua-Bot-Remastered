@@ -58,6 +58,11 @@ module.exports = class extends slashCommand {
                             .addField(`Post de`, `${data.author}`, true).addField(`Subreddit`, `${data.subreddit}`, true)
                             .addField(`Link`, `${data.postLink}`, true)
                             .setImage(data.url)
+                            .setFooter({
+                                text: `Requisitado por ${interaction.user.username}`,
+                                iconURL: interaction.user.displayAvatarURL({ format: 'png', dynamic: false })
+                            })
+
                         i.reply({ content: null, embeds: [embed] })
                     }
                     else if (i.customId === `dataNo${dateNow}`) {
@@ -76,6 +81,10 @@ module.exports = class extends slashCommand {
                     .addField(`Post de`, `${data.author}`, true).addField(`Subreddit`, `${data.subreddit}`, true)
                     .addField(`Link`, `${data.postLink}`, true)
                     .setImage(data.url)
+                    .setFooter({
+                        text: `Requisitado por ${interaction.user.username}`,
+                        iconURL: interaction.user.displayAvatarURL({ format: 'png', dynamic: false })
+                    })
 
                 interaction.editReply({ content: null, embeds: [embed] })
             }
