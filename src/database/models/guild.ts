@@ -9,6 +9,7 @@ let guildSchema = new Schema({
         channel: { type: String, default: "na" },
         message: { type: String, default: "Seja bem vindo ao servidor" },
         enabled: { type: Boolean, default: false },
+        type: { type: String, default: 'message' }
     }
 })
 
