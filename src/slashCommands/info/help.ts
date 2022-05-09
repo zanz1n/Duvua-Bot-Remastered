@@ -98,7 +98,10 @@ module.exports = class extends slashCommand {
                     .addField("\:globe_with_meridians:\:m: play", find("play"), true).addField("\:globe_with_meridians:\:m: queue", find("queue"), true)
                     .addField("\:globe_with_meridians: pause", find("pause"), true).addField("\:globe_with_meridians: resume", find("resume"), true)
                     .addField("\:globe_with_meridians:\:m: skip", find("skip"), true).addField("\:globe_with_meridians: songinfo", find("songinfo"), true)
-                    .addField("\:globe_with_meridians:\:m: stop", find("stop"), true).addField("*", "*", true).addField("*", "*", true)
+                    .addField("\:globe_with_meridians:\:m: stop", find("stop"), true).addField("\:globe_with_meridians: dj add", "Adiciona um dj no server", true)
+                    .addField("\:globe_with_meridians: dj remove", "Remove algum dj do server", true)
+
+                    .addField("\:information_source: Dica", "**Dj podem controlar playlists e músicas sem que precisem de permissões adminitrativas no server.**")
 
                 i.deferUpdate()
                 interaction.editReply({ content: null, embeds: [musicEmbed] })
