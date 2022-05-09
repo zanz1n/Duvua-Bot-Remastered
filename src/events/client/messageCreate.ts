@@ -1,8 +1,6 @@
 import Event from "../../structures/Event"
 import Bot from "../../structures/Client"
 import {
-    CachedManager,
-    Message,
     MessageEmbed
 } from 'discord.js'
 import guild from '../../database/models/guild'
@@ -17,20 +15,26 @@ module.exports = class extends Event {
     }
     run = async (message: sMessage) => {
         if (message.author.bot) return
-        if (this.client.config.dev_mode) console.log(`\x1b[36m[bot-events] Message created\x1b[0m`)
 
-        const guilDb = await guild.findById(message.guild.id) ||
+        const guilDb = await guild.findById(message.guild.id)
+        if (!guilDb) {
             new guild({ _id: message.guild.id, name: message.guild.name })
+            await guilDb.save()
+        }
 
-        await guilDb.save()
-        if (message.content.startsWith(guilDb.prefix)) {
-            const messageSplited = message.content.trim().split(/ +/g)
-            const messageCommand = messageSplited[0].replace(guilDb.prefix, "")
-            const args = message.content.replace(guilDb.prefix + messageCommand, "")
+        const messageSplited = message.content.trim().split(/ +/g)
+        const messageCommand = messageSplited[0].replace(guilDb.prefix, "")
+        const args = message.content.replace(guilDb.prefix + messageCommand, "")
 
-            const cmd = await this.client.commands.find(
+        if (message.mentions.users.first() === this.client.user) {
+            const cmd = this.client.commands.find((cm: Command) => cm.name === 'help') as Command
+            cmd.run(message, args)
+        }
+        else if (message.content.startsWith(guilDb.prefix)) {
+            const cmd = this.client.commands.find(
                 (cm: Command) => cm.aliases.push(cm.name) &&
-                    cm.aliases.find((st: string) => st === messageCommand) === messageCommand) as Command;
+                    cm.aliases.find((st: string) =>
+                        st === messageCommand) === messageCommand) as Command;
 
             if (cmd) {
                 cmd.run(message, args)
