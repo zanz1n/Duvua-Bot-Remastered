@@ -4,6 +4,7 @@ import {
     MessageEmbed,
     Permissions
 } from 'discord.js'
+import Member from '../../database/models/member'
 
 module.exports = class extends Command {
     constructor(client: Bot) {
@@ -15,15 +16,25 @@ module.exports = class extends Command {
         })
     }
     run = async (message: sMessage) => {
+        const { guild, author } = message
         const queue = this.client.player.getQueue(message.guild.id)
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
+
         if (!queue) {
             embed.setDescription(`**Não há nenhum som na fila,  ${message.author}**`)
             return await message.reply({ content: null, embeds: [embed] })
         }
+        const memberDb = await Member.findById(guild.id + author.id) ||
+            new Member({
+                _id: guild.id + author.id,
+                guildid: guild.id,
+                userid: author.id,
+                usertag: author.tag
+            })
 
         const currentSong = queue.current
-        if (message.member.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS) || message.author.id === currentSong.requestedBy.id) {
+        if (message.member.permissions.has(Permissions.FLAGS.MOVE_MEMBERS) ||
+            message.author.id === currentSong.requestedBy.id || memberDb.dj) {
             queue.skip()
             embed.setDescription(`**Música** ${queue.current.title} **pulada por ${message.author}**`)
             return await message.reply({ content: null, embeds: [embed] })
