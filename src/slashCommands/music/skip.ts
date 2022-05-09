@@ -4,6 +4,7 @@ import {
     MessageEmbed,
     Permissions
 } from "discord.js"
+import Member from '../../database/models/member'
 
 module.exports = class extends slashCommand {
     constructor(client: Bot) {
@@ -24,7 +25,17 @@ module.exports = class extends slashCommand {
             return await interaction.editReply({ content: null, embeds: [embed] })
         }
 
-        if (interaction.memberPermissions.has(Permissions.FLAGS.MANAGE_CHANNELS) || interaction.user === queue.current.requestedBy) {
+        const { user } = interaction
+        const memberDb = await Member.findById(interaction.guild.id + user.id) ||
+            new Member({
+                _id: interaction.guild.id + user.id,
+                guildid: interaction.guild.id,
+                userid: user.id,
+                usertag: user.tag
+            })
+
+        if (interaction.memberPermissions.has(Permissions.FLAGS.MOVE_MEMBERS) ||
+            interaction.user === queue.current.requestedBy || memberDb.dj) {
             queue.skip()
 
             embed.setDescription(`**Música** ${queue.current.title} **pulada por ${interaction.user}**`)
