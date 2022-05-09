@@ -26,17 +26,14 @@ module.exports = class extends Command {
                 embed.setDescription(`**Não pesquiso nada com mais de 80 caracteres, ${message.author}**`)
                 return await message.reply({ content: null, embeds: [embed] })
             }
-            embed.setDescription(`**Carregando ${args}  [...]**`)
-            const msg = await message.reply({
-                content: null,
-                embeds: [embed]
-            })
             const member = message.member as any
 
             if (!member.voice.channel) {
                 embed.setDescription(`**Você prefisa estart em um canal de voz para tocar uma música, ${message.author}**`)
-                return await msg.edit({ content: null, embeds: [embed] })
+                return await message.reply({ content: null, embeds: [embed] })
             }
+            embed.setDescription(`**Carregando ${args}  [...]**`)
+            const msg = await message.reply({ content: null, embeds: [embed] })
 
             const queue = this.client.player.createQueue(message.guild)
 
