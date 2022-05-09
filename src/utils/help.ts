@@ -51,7 +51,7 @@ export default {
         return new MessageEmbed().setColor(client.config.embed_default_color)
             .addField("ℹ️ Info", "Comandos de inforomação em geral.")
             .addField("\:globe_with_meridians:\:m: ping", find("ping"), true).addField("\:globe_with_meridians: info", find("info"), true)
-            .addField("\:globe_with_meridians: help", find("help"), true).addField("\:globe_with_meridians:\:m: anime", find("anime"), true)
+            .addField("\:globe_with_meridians:\:m: help", find("help"), true).addField("\:globe_with_meridians:\:m: anime", find("anime"), true)
             .addField("\:globe_with_meridians: github", find("github"), true).addField("*", "*", true)
     },
     modUtil: (client: Bot, user: any, guilDb: any) => {
