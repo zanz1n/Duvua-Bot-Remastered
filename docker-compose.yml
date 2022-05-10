@@ -3,10 +3,9 @@ version: '3.7'
 services:
   nodebot-deploy:
     image: node:latest
-    user: node
     working_dir: /home/node/app
     container_name: node_bot_compose
-    command: bash -c "yarn install && yarn start"
+    command: /bin/sh -c "yarn install && yarn start"
     volumes:
       - ./:/home/node/app
     restart: always
