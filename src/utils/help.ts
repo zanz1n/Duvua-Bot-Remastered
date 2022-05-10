@@ -43,7 +43,8 @@ export default {
             .addField("🥳 Fun", "Comandos for fun e de diversão em geral.")
             .addField("\:globe_with_meridians:\:m: kiss", find("kiss"), true).addField("\:globe_with_meridians:\:m: avatar", find("avatar"), true)
             .addField("\:m: bruno", "Não falamos do Bruno", true).addField("\:globe_with_meridians: meme", find("meme"), true)
-            .addField("*", "*", true).addField("*", "*", true)
+            .addField("\:globe_with_meridians: facts year", "Exibe curiosidades sobre um ano", true)
+            .addField("\:globe_with_meridians: facts number", "Exibe curiosidades sobre um número", true)
     },
     info: (client: Bot, user: any, guilDb: any) => {
         const find = (command: string) => { return client.slashCommands.find((c: slashCommand) => c.name === command).description || "Command not found" }
