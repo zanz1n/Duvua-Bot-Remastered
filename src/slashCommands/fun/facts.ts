@@ -10,7 +10,7 @@ module.exports = class extends slashCommand {
     constructor(client: Bot) {
         super(client, {
             name: "facts",
-            description: "Exibe curiosidades sobre um determinado número",
+            description: "Exibe curiosidades sobre algo que envolva números",
             disabled: false,
             ephemeral: false,
             options: [
@@ -96,8 +96,8 @@ module.exports = class extends slashCommand {
                 })
                 embed.setDescription(`**${trad.text}**`)
                 await interaction.editReply({ content: null, embeds: [embed] })
-            }).catch(async (err) => {
-                console.log(err)
+            }).catch(async (err: Error) => {
+                console.log(err.name)
                 embed.setDescription(`**${number} é um número muito legal.**`)
                 await interaction.editReply({ content: null, embeds: [embed] })
             })
