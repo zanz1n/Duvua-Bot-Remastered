@@ -2,4 +2,4 @@ FROM node:16
 
 WORKDIR /server
 
-CMD echo 'Starting...\n' && yarn install && yarn dev
+CMD echo 'Starting...\n' && yarn install && yarn build && yarn prod
