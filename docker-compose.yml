@@ -7,9 +7,9 @@ services:
     restart: always
     container_name: dcbot_node
     environment:
-      BOT_TOKEN: ""
-      SERVER_ID: ""
-      MONGODB_URL: "mongodb://root:root@dcbot_mongo:27017/?authMechanism=DEFAULT"
+      BOT_TOKEN: ${PRE_BOT_TOKEN}
+      SERVER_ID: ${PRE_SERVER_ID}
+      MONGODB_URL: ${PRE_MONGODB_URL}
     volumes:
       - ./:/server
     networks:
