@@ -8,11 +8,11 @@ module.exports = class extends slashCommand {
         super(client, {
             name: "internationalss",
             description: "Exibe informações sobre a iss [International Space Station]",
-            disabled: false,
+            disabled: true,
             ephemeral: false,
         })
     }
     run = async (interaction: sInteraction) => {
-        console.log("HMM")
+
     }
 }
