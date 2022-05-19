@@ -19,9 +19,15 @@ module.exports = class extends slashCommand {
 
         const random = (min: number, max: number) => Math.floor(Math.random() * (max - min) + min)
 
-        const type = ['people', 'planets'/*,'starships'*/]
+        const type = ['people', 'planets', 'starships']
+        const starshipNumbers = [
+            2, 3, 5, 9, 10, 11, 12, 13, 15, 17, 21, 22, 23, 27, 28, 29, 31, 32,
+            39, 40, 41, 43, 47, 48, 49, 52, 58, 59, 61, 63, 64, 65, 66, 68, 74, 75
+        ]
+
+        console.log(starshipNumbers.length)
         const randomtype = type[random(0, type.length)]
-        const numbers = `${randomtype === 'people' ? random(1, 83) : randomtype === 'planets' ? random(1, 60) : random(1, 5)}`
+        const numbers = `${randomtype === 'people' ? random(1, 83) : randomtype === 'planets' ? random(1, 60) : starshipNumbers[random(1, 36)]}`
 
         if (this.client.config.dev_mode) console.log('GET', `https://swapi.dev/api/${randomtype}/${numbers}`)
         fetch(`https://swapi.dev/api/${randomtype}/${numbers}`, {
@@ -34,30 +40,45 @@ module.exports = class extends slashCommand {
                     GET https://swapi.dev/api/${randomtype}/${numbers}`)
             } else {
                 embed.setTitle(`${data.name}`)
-                if (randomtype === 'people') {
-                    embed.setDescription(`**Pessoa**`)
-                    embed.addField("Genero", `${data.gender}`, true)
-                        .addField("Altura", `${data.height.replace("unknown", "desconhecido")}`, true)
-                        .addField("Massa", `${data.mass.replace("unknown", "desconhecido")}`, true)
-                        .addField("Cor do cabelo", `${data.hair_color.replace("none", "n/a")}`, true)
-                        .addField("Cor da pele", `${data.skin_color.replace("none", "n/a")}`, true)
-                        .addField("Cor dos olhos", `${data.eye_color.replace("unknown", "desconhecido")}`, true)
-                        .addField("Nascimento", `${data.birth_year.replace("unknown", "desconhecido")}`, true)
-                        .addField("Filmes", `${data.films.length}`, true)
-                        .addField("Veículos", `${data.vehicles.length + data.starships.length}`, true)
-                } else if (randomtype === 'planets') {
-                    embed.setDescription(`**Planeta**`)
-                        .addField("Período de rotação", `${data.rotation_period}`, true)
-                        .addField("Período de orbita", `${data.orbital_period}`, true)
-                        .addField("Diametro", `${data.diameter}`, true)
-                        .addField("Clima", `${data.climate}`, true)
-                        .addField("Terreno", `${data.terrain}`, true)
-                        .addField("Superficie de água", `${data.surface_water}`, true)
-                        .addField("População", `${data.population}`, true)
-                        .addField("Filmes", `${data.films.length}`, true)
-                        .addField("Residentes", `${data.residents.length}`)
-                } else if (randomtype === 'starships') {
-                    embed.setDescription(`**Nave**`)
+
+                switch (randomtype) {
+                    case 'people':
+                        embed.setDescription(`**[Pessoa / Android](${data.url})**`)
+                            .addField("Genero", `${data.gender}`, true)
+                            .addField("Altura", `${data.height}`, true)
+                            .addField("Massa", `${data.mass}`, true)
+                            .addField("Cor do cabelo", `${data.hair_color}`, true)
+                            .addField("Cor da pele", `${data.skin_color}`, true)
+                            .addField("Cor dos olhos", `${data.eye_color}`, true)
+                            .addField("Nascimento", `${data.birth_year}`, true)
+                            .addField("Filmes", `${data.films.length}`, true)
+                            .addField("Veículos", `${data.vehicles.length + data.starships.length}`, true)
+                        break
+                    case 'planets':
+                        embed.setDescription(`**[Planeta](${data.url})**`)
+                            .addField("Período de rotação", `${data.rotation_period}`, true)
+                            .addField("Período de orbita", `${data.orbital_period}`, true)
+                            .addField("Diametro", `${data.diameter}`, true)
+                            .addField("Clima", `${data.climate}`, true)
+                            .addField("Terreno", `${data.terrain}`, true)
+                            .addField("Superficie de água", `${data.surface_water}`, true)
+                            .addField("População", `${data.population}`, true)
+                            .addField("Filmes", `${data.films.length}`, true)
+                            .addField("Residentes", `${data.residents.length}`)
+                        break
+
+                    case 'starships':
+                        embed.setDescription(`**[Nave](${data.url})**`)
+                            .addField("Modelo", `${data.model}`, true)
+                            .addField("Fabricante", `${data.manufacturer.length > 30 ? data.manufacturer.split(0, 30) + "..." : data.manufacturer}`, true)
+                            .addField("Custo", `${data.cost_in_credits}`, true)
+                            .addField("Tamanho", `${data.length}`, true)
+                            .addField("Tripulação / Passageiros", `${data.crew} / ${data.passengers}`, true)
+                            .addField("Carga", `${data.cargo_capacity}`, true)
+                            .addField("Classe", `${data.starship_class}`, true)
+                            .addField("Pilotos", `${data.pilots.length}`, true)
+                            .addField("Filmes", `${data.films.length}`, true)
+                        break
                 }
             }
             interaction.editReply({ content: null, embeds: [embed] })
