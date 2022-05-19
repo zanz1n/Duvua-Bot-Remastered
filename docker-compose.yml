@@ -1,11 +1,41 @@
 version: '3.7'
 
 services:
-  nodebot-deploy:
-    image: node:latest
-    working_dir: /home/node/app
-    container_name: node_bot_compose
-    command: /bin/sh -c "yarn install && yarn start"
-    volumes:
-      - ./:/home/node/app
+  dcbot_node:
+    build:
+      context: .
     restart: always
+    container_name: dcbot_node
+    environment:
+      BOT_TOKEN: ""
+      SERVER_ID: ""
+      MONGODB_URL: "mongodb://root:root@dcbot_mongo:27017/?authMechanism=DEFAULT"
+    volumes:
+      - ./:/server
+    networks:
+      dcbot:
+    depends_on:
+      - dcbot_mongo
+
+  dcbot_mongo:
+    image: mongo
+    restart: always
+    container_name: dcbot_mongo
+    ports:
+      - 25535:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    command: mongod --logpath=/dev/null
+    volumes:
+      - dcbot_mongo_volume:/data/db
+    networks:
+      dcbot:
+
+
+networks:
+  dcbot:
+    driver: bridge
+
+volumes:
+  dcbot_mongo_volume:
