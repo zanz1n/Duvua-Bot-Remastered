@@ -1,4 +1,5 @@
 import { ColorResolvable } from "discord.js"
+import 'dotenv/config'
 
 export default class Config {
     token: string
@@ -12,14 +13,14 @@ export default class Config {
     log_all_loads: boolean
 
     constructor() {
-        this.token = ""
-        this.serverid = ""
-        this.name = "Bot"
+        this.token = process.env.BOT_TOKEN
+        this.serverid = process.env.SERVER_ID
+        this.name = "Bot" //This name is no long permited
         this.embed_default_color = "#0000FF"
         this.prefix = "-"
         this.dev_mode = true
         this.log_all_loads = false
         this.cost = "R$: 10,99"
-        this.mongodb_url = "mongodb://localhost:27017/test"
+        this.mongodb_url = process.env.MONGODB_URL
     }
 }
