@@ -43,7 +43,7 @@ module.exports = class extends slashCommand {
     }
     run = async (interaction: sInteraction) => {
         const guilDb = await guild.findById(interaction.guild.id) ||
-            new guild({
+            await new guild({
                 _id: interaction.guild.id,
                 name: interaction.guild.name
             })
@@ -100,7 +100,7 @@ module.exports = class extends slashCommand {
                         ticketNo.setDisabled(true)
                         interaction.editReply({ components: [button] })
                         const interactiondb = await ticket.findById(i.guild.id + i.user.id) ||
-                            new ticket({
+                            await new ticket({
                                 _id: i.guild.id + i.user.id,
                                 user: {
                                     id: i.user.id,

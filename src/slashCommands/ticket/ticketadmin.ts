@@ -136,7 +136,7 @@ module.exports = class extends slashCommand {
             }
         } else {
             const guilDb = await guild.findById(interaction.guild.id) ||
-                new guild({
+                await new guild({
                     _id: interaction.guild.id,
                     name: interaction.guild.name
                 })

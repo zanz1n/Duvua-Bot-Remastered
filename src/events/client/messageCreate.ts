@@ -16,11 +16,10 @@ module.exports = class extends Event {
     run = async (message: sMessage) => {
         if (message.author.bot) return
 
-        const guilDb = await guild.findById(message.guild.id)
-        if (!guilDb) {
-            new guild({ _id: message.guild.id, name: message.guild.name })
-            await guilDb.save()
-        }
+        const guilDb = await guild.findById(message.guild.id) ||
+            await new guild({ _id: message.guild.id, name: message.guild.name });
+
+        await guilDb.save()
 
         const messageSplited = message.content.trim().split(/ +/g)
         const messageCommand = messageSplited[0].replace(guilDb.prefix, "")
