@@ -1,10 +1,10 @@
-import Command, { sMessage } from '../../structures/Command'
-import Bot from '../../structures/Client'
+import { Bot } from '../../structures/Client'
+import { Command } from '../../structures/Command'
+import { sMessage } from '../../types/Message'
+import { Embed as MessageEmbed } from '../../types/Embed'
 import {
-    MessageEmbed,
     GuildMember,
 } from 'discord.js'
-import Member from '../../database/models/member'
 import Canvacord from 'canvacord'
 
 module.exports = class extends Command {
@@ -28,12 +28,7 @@ module.exports = class extends Command {
             } else embed.setDescription(`**${user} é um bot, ${message.author}**`)
             return message.reply({ content: null, embeds: [embed] })
         }
-        const mensioned = await Member.findById(message.guild.id + message.author.id) ||
-            new Member({
-                _id: message.guild.id + message.author.id,
-                guildid: message.guild.id,
-                usertag: message.author.tag
-            })
+        const mensioned = await this.client.db.getMemberDbFromMember(message.member)
 
         mensioned.save()
         const meta = 3 * (mensioned.level ** 2)

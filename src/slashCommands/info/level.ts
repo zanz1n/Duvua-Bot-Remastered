@@ -1,7 +1,7 @@
-import slashCommand, { sInteraction } from '../../structures/slashCommand'
-import Bot from '../../structures/Client'
-import { MessageEmbed } from 'discord.js'
-import Member from '../../database/models/member'
+import { slashCommand } from '../../structures/slashCommand'
+import { sInteraction } from '../../types/Interaction'
+import { Bot } from '../../structures/Client'
+import { Embed as MessageEmbed } from '../../types/Embed'
 import Canvacord from 'canvacord'
 
 module.exports = class extends slashCommand {
@@ -33,12 +33,7 @@ module.exports = class extends slashCommand {
             } else embed.setDescription(`**${user} é um bot, ${interaction.user}**`)
             return interaction.editReply({ content: null, embeds: [embed] })
         }
-        const mensioned = await Member.findById(interaction.guild.id + interaction.user.id) ||
-            new Member({
-                _id: interaction.guild.id + interaction.user.id,
-                guildid: interaction.guild.id,
-                usertag: interaction.user.tag
-            })
+        const mensioned = await this.client.db.getMemberDbFromMember(interaction.member)
 
         mensioned.save()
         const meta = 3 * (mensioned.level ** 2)

@@ -1,10 +1,10 @@
-import Command, { sMessage } from '../../structures/Command'
-import Bot from '../../structures/Client'
+import { Bot } from '../../structures/Client'
+import { Command } from '../../structures/Command'
+import { sMessage } from '../../types/Message'
+import { Embed as MessageEmbed } from '../../types/Embed'
 import {
-    MessageEmbed,
     Permissions
 } from 'discord.js'
-import Member from '../../database/models/member'
 
 module.exports = class extends Command {
     constructor(client: Bot) {
@@ -24,13 +24,7 @@ module.exports = class extends Command {
             embed.setDescription(`**Não há nenhum som na fila,  ${message.author}**`)
             return await message.reply({ content: null, embeds: [embed] })
         }
-        const memberDb = await Member.findById(guild.id + author.id) ||
-            new Member({
-                _id: guild.id + author.id,
-                guildid: guild.id,
-                userid: author.id,
-                usertag: author.tag
-            })
+        const memberDb = await this.client.db.getMemberDbFromMember(message.member)
 
         const currentSong = queue.current
         if (message.member.permissions.has(Permissions.FLAGS.MOVE_MEMBERS) ||

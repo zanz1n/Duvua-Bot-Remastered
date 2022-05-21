@@ -1,12 +1,11 @@
-import slashCommand, { sInteraction } from '../../structures/slashCommand'
+import { slashCommand } from '../../structures/slashCommand'
+import { sInteraction } from '../../types/Interaction'
+import { Bot } from '../../structures/Client'
+import { Embed as MessageEmbed } from '../../types/Embed'
 import {
-    MessageEmbed,
     User,
     GuildMember
 } from 'discord.js'
-import Bot from '../../structures/Client'
-import Member from '../../database/models/member'
-import dUser from '../../database/models/user'
 
 module.exports = class extends slashCommand {
     constructor(client: Bot) {
@@ -41,18 +40,11 @@ module.exports = class extends slashCommand {
             }
         }
 
-        const userDb = await dUser.findById(user.id) ||
-            new dUser({ _id: user.id, usertag: user.tag });
-        const memberDb = await Member.findById(interaction.guild.id + user.id) ||
-            new Member({
-                _id: interaction.guild.id + user.id,
-                guildid: interaction.guild.id,
-                userid: user.id,
-                usertag: user.tag
-            })
+        const userDb = await this.client.db.getUserDbFromMember(interaction.member)
+        const memberDb = await this.client.db.getMemberDbFromMember(interaction.member)
 
-        userDb.save()
-        memberDb.save()
+        await userDb.save()
+        await memberDb.save()
 
         embed.setTitle(`\:moneybag: Banco de ${user.username}`)
             .setDescription(`\n

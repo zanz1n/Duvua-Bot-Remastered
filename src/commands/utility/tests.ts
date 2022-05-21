@@ -1,12 +1,12 @@
-import Command, { sMessage } from '../../structures/Command'
-import Bot from '../../structures/Client'
+import { Bot } from '../../structures/Client'
+import { Command } from '../../structures/Command'
+import { sMessage } from '../../types/Message'
+import { Embed as MessageEmbed } from '../../types/Embed'
 import {
     TextChannel,
     ColorResolvable,
-    MessageEmbed,
     Permissions
 } from 'discord.js'
-import guild from '../../database/models/guild'
 import Canvacord from 'canvacord'
 
 module.exports = class extends Command {
@@ -27,11 +27,8 @@ module.exports = class extends Command {
         }
         const { member } = message
 
-        let guilDb = await guild.findById(member.guild.id)
-        if (!guilDb) {
-            guilDb = new guild({ _id: member.guild.id, name: member.guild.name })
-            await guilDb.save()
-        }
+        let guilDb = await this.client.db.getGuildDbFromMember(message.member)
+        
         const channel = member.guild.channels.cache.get(guilDb.wellcome.channel) as TextChannel
 
         if (!channel) return

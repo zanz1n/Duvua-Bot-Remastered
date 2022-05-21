@@ -1,5 +1,7 @@
-import slashCommand, { sInteraction } from '../../structures/slashCommand'
-import Bot from '../../structures/Client'
+import { slashCommand } from '../../structures/slashCommand'
+import { sInteraction } from '../../types/Interaction'
+import { Bot } from '../../structures/Client'
+import { Embed as MessageEmbed } from '../../types/Embed'
 import {
 } from 'discord.js'
 

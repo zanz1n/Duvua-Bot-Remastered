@@ -1,14 +1,13 @@
-import slashCommand, { sInteraction } from "../../structures/slashCommand"
-import Bot from "../../structures/Client"
+import { slashCommand } from '../../structures/slashCommand'
+import { sInteraction } from '../../types/Interaction'
+import { Bot } from '../../structures/Client'
+import { Embed as MessageEmbed } from '../../types/Embed'
 import {
     Permissions,
-    MessageEmbed,
     MessageButton,
     MessageActionRow,
     TextChannel
 } from 'discord.js'
-import ticket from '../../database/models/ticket'
-import guild from '../../database/models/guild'
 
 module.exports = class extends slashCommand {
     constructor(client: Bot) {
@@ -107,7 +106,7 @@ module.exports = class extends slashCommand {
         else if (subCommand === "delete") {
             const user = interaction.options.getUser('usuario')
 
-            const find = await ticket.findById(interaction.guild.id + user.id)
+            const find = await this.client.db.findTicketDbFromMember(interaction.member)
             if (find) {
                 const channel = interaction.guild.channels.cache.get(find.channel.id)
                 if (channel) {
@@ -116,14 +115,14 @@ module.exports = class extends slashCommand {
                     })
 
                 } else {
-                    await ticket.findByIdAndDelete(interaction.guild.id + user.id).then(async () => {
+                    await this.client.db.models.Ticket.findByIdAndDelete(interaction.guild.id + user.id).then(async () => {
                         embed.setDescription(`**O ticket já foi deletado, ${interaction.user}**`)
                         return await interaction.editReply({ embeds: [embed] })
                     }).catch(async (err) => {
                         console.log(err)
                     })
                 }
-                await ticket.findByIdAndDelete(interaction.guild.id + user.id).then(async () => {
+                await this.client.db.models.Ticket.findByIdAndDelete(interaction.guild.id + user.id).then(async () => {
                     embed.setDescription(`**O ticket de ${user} foi deletado com sucesso**`)
                     return await interaction.editReply({ embeds: [embed] })
                 }).catch(async (err) => {
@@ -135,11 +134,7 @@ module.exports = class extends slashCommand {
                 return await interaction.editReply({ embeds: [embed] })
             }
         } else {
-            const guilDb = await guild.findById(interaction.guild.id) ||
-                await new guild({
-                    _id: interaction.guild.id,
-                    name: interaction.guild.name
-                })
+            const guilDb = await this.client.db.getGuildDbFromMember(interaction.member)
             if (subCommand === "disable") {
                 if (guilDb.enable_ticket === false) {
                     embed.setDescription(`**Os tickets já estavam desabilitados nesse servidor, ${interaction.user}**

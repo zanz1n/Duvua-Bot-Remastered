@@ -1,10 +1,11 @@
-import slashCommand, { sInteraction } from '../../structures/slashCommand'
+import { slashCommand } from '../../structures/slashCommand'
+import { sInteraction } from '../../types/Interaction'
+import { Bot } from '../../structures/Client'
+import { Embed as MessageEmbed } from '../../types/Embed'
+
 import {
-    MessageEmbed,
     Permissions
 } from 'discord.js'
-import Bot from '../../structures/Client'
-import guild from '../../database/models/guild'
 
 module.exports = class extends slashCommand {
     constructor(client: Bot) {
@@ -87,8 +88,7 @@ module.exports = class extends slashCommand {
             embed.setDescription(`**Você não tem permissão para usar esse comando, ${interaction.user}**`)
             return await interaction.editReply({ content: null, embeds: [embed] })
         }
-        const guilDb = await guild.findById(interaction.guild.id) ||
-            new guild({ _id: interaction.guild.id, name: interaction.guild.name })
+        const guilDb = await this.client.db.getGuildDbFromMember(interaction.member)
 
         await guilDb.save()
         if (subCommand === "wellcome") {

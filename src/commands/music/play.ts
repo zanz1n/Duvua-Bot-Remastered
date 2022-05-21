@@ -1,7 +1,8 @@
-import Command, { sMessage } from '../../structures/Command'
-import Bot from '../../structures/Client'
+import { Bot } from '../../structures/Client'
+import { Command } from '../../structures/Command'
+import { sMessage } from '../../types/Message'
+import { Embed as MessageEmbed } from '../../types/Embed'
 import {
-    MessageEmbed,
     MessageButton,
     MessageActionRow
 } from 'discord.js'

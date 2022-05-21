@@ -1,18 +1,15 @@
-import slashCommand, { sInteraction } from '../../structures/slashCommand'
-import {
-    MessageEmbed,
-    User,
-    GuildMember
-} from 'discord.js'
-import Bot from '../../structures/Client'
-import Member from '../../database/models/member'
-import dUser from '../../database/models/user'
+import { slashCommand } from '../../structures/slashCommand'
+import { sInteraction } from '../../types/Interaction'
+import { Bot } from '../../structures/Client'
+import { Embed as MessageEmbed } from '../../types/Embed'
 
 module.exports = class extends slashCommand {
     constructor(client: Bot) {
         super(client, {
             name: "work",
-            description: "Você trabalha e obtem dinheiro em troca"
+            description: "Você trabalha e obtem dinheiro em troca",
+            disabled: false,
+            ephemeral: false
         })
     }
     run = async (interaction: sInteraction) => {
@@ -21,16 +18,10 @@ module.exports = class extends slashCommand {
         const user = interaction.user
         const member = interaction.member
 
-        const userDb = await dUser.findById(interaction.user.id) ||
-            new dUser({ _id: user.id, usertag: user.tag });
+        const userDb = await this.client.db.getUserDbFromMember(interaction.member)
 
-        const memberDb = await Member.findById(interaction.guild.id + user.id) ||
-            new Member({
-                _id: interaction.guild.id + user.id,
-                guildid: interaction.guild.id,
-                userid: user.id,
-                usertag: user.tag
-            })
+        const memberDb = await this.client.db.getMemberDbFromMember(interaction.member)
+
         function interGer(n: number) {
             return n - n % 1
         }

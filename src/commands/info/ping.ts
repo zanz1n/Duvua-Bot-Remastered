@@ -1,8 +1,7 @@
-import Command, { sMessage } from '../../structures/Command'
-import Bot from '../../structures/Client'
-import {
-    MessageEmbed
-} from 'discord.js'
+import { Bot } from '../../structures/Client'
+import { Command } from '../../structures/Command'
+import { sMessage } from '../../types/Message'
+import { Embed as MessageEmbed } from '../../types/Embed'
 
 module.exports = class extends Command {
     constructor(client: Bot) {

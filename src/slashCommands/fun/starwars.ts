@@ -1,8 +1,7 @@
-import slashCommand, { sInteraction } from '../../structures/slashCommand'
-import Bot from '../../structures/Client'
-import {
-    MessageEmbed
-} from 'discord.js'
+import { slashCommand } from '../../structures/slashCommand'
+import { sInteraction } from '../../types/Interaction'
+import { Bot } from '../../structures/Client'
+import { Embed as MessageEmbed } from '../../types/Embed'
 import fetch from 'node-fetch'
 
 module.exports = class extends slashCommand {

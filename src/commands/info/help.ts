@@ -1,10 +1,11 @@
-import Command, { sMessage } from '../../structures/Command'
-import Bot from '../../structures/Client'
+import { Bot } from '../../structures/Client'
+import { Command } from '../../structures/Command'
+import { sMessage } from '../../types/Message'
+
 import {
     SelectMenuInteraction,
     MessageComponentInteraction
 } from 'discord.js'
-import Guild from '../../database/models/guild'
 import replies from '../../utils/help'
 
 module.exports = class extends Command {
@@ -20,8 +21,7 @@ module.exports = class extends Command {
         const { guild, author, channel } = message
 
         const dateNow = new Date
-        const guilDb = await Guild.findById(guild.id) ||
-            new Guild({ _id: guild.id, name: guild.name })
+        const guilDb = await this.client.db.getGuildDbFromMember(message.member)
 
         const filter = (btnInt: MessageComponentInteraction) => btnInt.isSelectMenu() && btnInt.user.id === author.id
 

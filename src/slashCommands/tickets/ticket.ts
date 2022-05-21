@@ -1,15 +1,13 @@
-import slashCommand, { sInteraction } from '../../structures/slashCommand'
+import { slashCommand } from '../../structures/slashCommand'
+import { sInteraction } from '../../types/Interaction'
+import { Bot } from '../../structures/Client'
+import { Embed as MessageEmbed } from '../../types/Embed'
 import {
-    MessageEmbed,
     MessageActionRow,
     MessageButton,
     TextChannel,
     MessageComponentInteraction
 } from 'discord.js'
-
-import Bot from '../../structures/Client'
-import ticket from '../../database/models/ticket'
-import guild from '../../database/models/guild'
 const sleep = (ms: number) => { return new Promise(resolve => setTimeout(resolve, ms)) }
 
 module.exports = class extends slashCommand {
@@ -42,11 +40,11 @@ module.exports = class extends slashCommand {
         })
     }
     run = async (interaction: sInteraction) => {
-        const guilDb = await guild.findById(interaction.guild.id) ||
-            await new guild({
-                _id: interaction.guild.id,
-                name: interaction.guild.name
-            })
+        const guilDb = await this.client.db.getGuildDbFromMember(interaction.member)
+
+        await guilDb.save()
+
+        await guilDb.save()
         if (!guilDb.enable_ticket) {
             const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
                 .setDescription(`**O uso de tickets não é permitido nesse servidor, ${interaction.user}**`)
@@ -65,7 +63,7 @@ module.exports = class extends slashCommand {
                 return await interaction.editReply({ content: null, embeds: [confEmbed] })
             }
 
-            const interactiondb = await ticket.findById(interaction.guild.id + interaction.user.id)
+            const interactiondb = await this.client.db.findTicketDbFromMember(interaction.member)
 
             if (interactiondb) {
                 confEmbed.setDescription(`**Você já tem um ticket criado, ${interaction.user}**`)
@@ -93,22 +91,13 @@ module.exports = class extends slashCommand {
             }
             const collector = interaction.channel.createMessageComponentCollector({ filter, max: 1, time: 20000 })
 
-            collector.on("collect", async (i) => {
+            collector.on("collect", async (i: sInteraction) => {
                 if (i.isButton) {
                     if (i.customId === `ticketYes${dateNow}`) {
                         ticketYes.setDisabled(true)
                         ticketNo.setDisabled(true)
                         interaction.editReply({ components: [button] })
-                        const interactiondb = await ticket.findById(i.guild.id + i.user.id) ||
-                            await new ticket({
-                                _id: i.guild.id + i.user.id,
-                                user: {
-                                    id: i.user.id,
-                                    tag: i.user.tag
-                                },
-                                opened: false,
-                                guildId: i.guild.id
-                            })
+                        const interactiondb = await this.client.db.getTicketDbFromMember(i.member)
 
                         await interactiondb.save().catch((err: Error) => {
                             console.log("ERRO NA DATABASE", err.name)
@@ -162,7 +151,7 @@ module.exports = class extends slashCommand {
                             beforeCollector.on("collect", async (iO) => {
                                 if (iO.customId === `cancelBefore${dateNow}`) {
                                     const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
-                                    const find = await ticket.findById(interaction.guild.id + interaction.user.id)
+                                    const find = await this.client.db.findTicketDbFromMember(interaction.member)
                                     if (find) {
                                         const channel = interaction.guild.channels.cache.get(find.channel.id)
                                         if (channel) {
@@ -170,12 +159,13 @@ module.exports = class extends slashCommand {
                                                 console.log(err)
                                             })
                                         }
-                                        await ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).then(async () => {
-                                            embed.setDescription(`**Seu ticket foi deletado com sucesso, ${interaction.user}**`)
-                                            return await iO.reply({ embeds: [embed], ephemeral: true })
-                                        }).catch(async (err) => {
-                                            console.log(err)
-                                        })
+                                        await this.client.db.models.Ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id)
+                                            .then(async () => {
+                                                embed.setDescription(`**Seu ticket foi deletado com sucesso, ${interaction.user}**`)
+                                                return await iO.reply({ embeds: [embed], ephemeral: true })
+                                            }).catch(async (err) => {
+                                                console.log(err)
+                                            })
 
                                     } else {
                                         embed.setDescription(`**Você não tem nenhum ticket criado, ${interaction.user}**`)
@@ -201,7 +191,7 @@ module.exports = class extends slashCommand {
                             collector.on("collect", async (tI) => {
                                 if (tI.customId === "cancel") {
                                     const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
-                                    const find = await ticket.findById(interaction.guild.id + interaction.user.id)
+                                    const find = await this.client.db.findTicketDbFromMember(interaction.member)
                                     if (find) {
                                         const channel = interaction.guild.channels.cache.get(find.channel.id)
                                         if (channel) {
@@ -209,7 +199,7 @@ module.exports = class extends slashCommand {
                                                 console.log(err)
                                             })
                                         }
-                                        await ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).then(async () => {
+                                        await this.client.db.models.Ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).then(async () => {
                                             embed.setDescription(`**Seu ticket foi deletado com sucesso, ${interaction.user}**`)
                                             return await i.channel.send({ embeds: [embed] })
                                         }).catch(async (err) => {
@@ -230,9 +220,9 @@ module.exports = class extends slashCommand {
 
                         }).catch(async err => {
                             console.log(err)
-                            const find = await ticket.findById(interaction.guild.id + interaction.user.id)
+                            const find = await this.client.db.findTicketDbFromMember(interaction.member)
                             if (find) {
-                                await ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).catch(async (err) => {
+                                await this.client.db.models.Ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).catch(async (err) => {
                                     console.log(err)
                                 })
                             }
@@ -251,11 +241,11 @@ module.exports = class extends slashCommand {
         }
         else if (subCommand === "delete") {
             const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
-            const find = await ticket.findById(interaction.guild.id + interaction.user.id)
+            const find = await this.client.db.findTicketDbFromMember(interaction.member)
             if (find) {
                 const channel = interaction.guild.channels.cache.get(find.channel.id)
                 if (channel) {
-                    await ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).then(async () => {
+                    await this.client.db.models.Ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).then(async () => {
                         embed.setDescription(`**Seu ticket foi deletado com sucesso, ${interaction.user}**`)
                         return await interaction.editReply({ embeds: [embed] })
                     }).catch(async (err: Error) => {
@@ -266,7 +256,7 @@ module.exports = class extends slashCommand {
                         console.log(err)
                     })
                 } else {
-                    await ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).then(async () => {
+                    await this.client.db.models.Ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).then(async () => {
                         embed.setDescription(`**O ticket já foi deletado por um moderador, ${interaction.user}**`)
                         return await interaction.editReply({ embeds: [embed] })
                     }).catch(async (err: Error) => {

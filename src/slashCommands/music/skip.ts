@@ -1,10 +1,10 @@
-import slashCommand, { sInteraction } from "../../structures/slashCommand"
-import Bot from "../../structures/Client"
+import { slashCommand } from '../../structures/slashCommand'
+import { sInteraction } from '../../types/Interaction'
+import { Bot } from '../../structures/Client'
+import { Embed as MessageEmbed } from '../../types/Embed'
 import {
-    MessageEmbed,
     Permissions
 } from "discord.js"
-import Member from '../../database/models/member'
 
 module.exports = class extends slashCommand {
     constructor(client: Bot) {
@@ -26,13 +26,7 @@ module.exports = class extends slashCommand {
         }
 
         const { user } = interaction
-        const memberDb = await Member.findById(interaction.guild.id + user.id) ||
-            new Member({
-                _id: interaction.guild.id + user.id,
-                guildid: interaction.guild.id,
-                userid: user.id,
-                usertag: user.tag
-            })
+        const memberDb = await this.client.db.getMemberDbFromMember(interaction.member)
 
         if (interaction.memberPermissions.has(Permissions.FLAGS.MOVE_MEMBERS) ||
             interaction.user === queue.current.requestedBy || memberDb.dj) {

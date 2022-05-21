@@ -1,10 +1,11 @@
-import slashCommand, { sInteraction } from '../../structures/slashCommand'
+import { slashCommand } from '../../structures/slashCommand'
+import { sInteraction } from '../../types/Interaction'
+import { Bot } from '../../structures/Client'
+import { Embed as MessageEmbed } from '../../types/Embed'
 import {
     SelectMenuInteraction,
     MessageComponentInteraction
 } from 'discord.js'
-import Bot from '../../structures/Client'
-import Guild from '../../database/models/guild'
 import replies from '../../utils/help'
 
 module.exports = class extends slashCommand {
@@ -20,8 +21,7 @@ module.exports = class extends slashCommand {
         const { guild, user, channel } = interaction
 
         const dateNow = new Date
-        const guilDb = await Guild.findById(guild.id) ||
-            new Guild({ _id: guild.id, name: guild.name })
+        const guilDb = this.client.db.getGuildDbFromMember(interaction.member)
 
         const filter = (btnInt: MessageComponentInteraction) => btnInt.isSelectMenu() && btnInt.user.id === user.id
 

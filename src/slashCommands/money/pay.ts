@@ -1,19 +1,20 @@
-import slashCommand, { sInteraction } from '../../structures/slashCommand'
-import Bot from '../../structures/Client'
+import { slashCommand } from '../../structures/slashCommand'
+import { sInteraction } from '../../types/Interaction'
+import { Bot } from '../../structures/Client'
+import { Embed as MessageEmbed } from '../../types/Embed'
 import {
-    MessageEmbed,
     MessageButton,
     MessageActionRow,
     MessageComponentInteraction
 } from 'discord.js'
-import User from '../../database/models/user'
-import Member from '../../database/models/member'
 
 module.exports = class extends slashCommand {
     constructor(client: Bot) {
         super(client, {
             name: "pay",
             description: "Paga uma quantidade de dinheiro a um usuário",
+            disabled: false,
+            ephemeral: false,
             options: [{
                 type: 'SUB_COMMAND',
                 name: 'pratas',
@@ -62,7 +63,9 @@ module.exports = class extends slashCommand {
 
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
 
-        const user = interaction.options.getUser('usuario')
+        const member = interaction.options.getMember('usuario')
+
+        const { user } = member
         if (user.id === this.client.user.id) {
             embed.setDescription(`**Na próxima eu roubo seu rico dinheirinho, ${interaction.user}**`)
             return await interaction.editReply({ content: null, embeds: [embed] })
@@ -102,26 +105,15 @@ module.exports = class extends slashCommand {
         const collector = interaction.channel.createMessageComponentCollector({ filter, max: 1, time: 20000 })
 
         if (subCommand === "pratas") {
-            var member1Db = await Member.findById(interaction.guild.id + interaction.user.id) ||
-                new Member({
-                    _id: interaction.guild.id + interaction.user.id,
-                    guildid: interaction.guild.id,
-                    userid: interaction.user.id,
-                    usertag: interaction.user.tag
-                });
+            var member1Db = await this.client.db.getMemberDbFromMember(interaction.member)
+
             if (member1Db.silver_coins < amount) {
                 embed.setDescription(`**Você não tem ${amount} moedas de prata disponíveis, ${interaction.user}**
                 🕳️ Você possui atualmente ${member1Db.silver_coins} moedas de prata`)
                 return await interaction.editReply({ content: null, embeds: [embed] })
 
             } else {
-                var member2Db = await Member.findById(interaction.guild.id + user.id) ||
-                    new Member({
-                        _id: interaction.guild.id + user.id,
-                        guildid: interaction.guild.id,
-                        userid: user.id,
-                        usertag: user.tag
-                    });
+                var member2Db = await this.client.db.getMemberDbFromMember(member)
 
                 embed.setDescription(`**Você deseja transferir ${amount} 🕳️ moedas de prata para ${user}?**
                 Você possui atualmente ${member1Db.silver_coins} 🕳️ moedas de prata`)
@@ -130,16 +122,14 @@ module.exports = class extends slashCommand {
         }
 
         if (subCommand === "ouro") {
-            var user1Db = await User.findById(interaction.user.id) ||
-                new User({ _id: interaction.user.id, usertag: interaction.user.tag });
+            var user1Db = await this.client.db.getUserDbFromMember(interaction.member)
 
             if (user1Db.gold_coins < amount) {
                 embed.setDescription(`**Você não tem ${amount} moedas de ouro disponíveis, ${interaction.user}**
                 🪙 Você possui atualmente ${user1Db.gold_coins} moedas de ouro`)
                 return await interaction.editReply({ content: null, embeds: [embed] })
             } else {
-                var user2Db = await User.findById(user.id) ||
-                    new User({ _id: user.id, usertag: user.tag });
+                var user2Db = await this.client.db.getUserDbFromMember(member)
 
                 embed.setDescription(`**Você deseja transferir ${amount} 🪙 moedas de ouro para ${user}?**
                 Você possui atualmente ${user1Db.gold_coins} 🪙 moedas de ouro`)
@@ -151,7 +141,7 @@ module.exports = class extends slashCommand {
             if (i.customId === `confirmTransfer${dateNow}`) {
                 confirmTransfer.setDisabled(true)
                 denyTransfer.setDisabled(true)
-                interaction.editReply({ components: [transferComp] }) //intentionally not awaited
+                interaction.editReply({ components: [transferComp] })
 
                 if (subCommand === 'ouro') {
                     user1Db.gold_coins -= amount
@@ -177,7 +167,7 @@ module.exports = class extends slashCommand {
             else if (i.customId === `denyTransfer${dateNow}`) {
                 confirmTransfer.setDisabled(true)
                 denyTransfer.setDisabled(true)
-                interaction.editReply({ components: [transferComp] }) //intentionally not awaited
+                interaction.editReply({ components: [transferComp] })
 
                 iembed.setDescription(`**Você cancelou o pagamento, ${i.user}**`)
                 await i.reply({ embeds: [iembed] })
