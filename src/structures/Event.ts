@@ -1,14 +1,15 @@
-import { Client } from 'discord.js'
-import Bot from '../structures/Client'
+import { Bot } from './Client'
 
-class Event {
+export type EventOptionsType = {
+    name: string
+}
+
+export class Event {
     client: Bot
     name: string
-    
-    constructor(client: Bot, options:any) {
+
+    constructor(client: Bot, options: EventOptionsType) {
         this.client = client
         this.name = options.name
     }
 }
-
-export default Event

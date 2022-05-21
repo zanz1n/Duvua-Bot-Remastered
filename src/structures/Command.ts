@@ -1,28 +1,22 @@
-import {
-    CacheType,
-    Client,
-    InteractionDeferReplyOptions,
-    InteractionDeferUpdateOptions,
-    InteractionReplyOptions,
-    Message
-} from 'discord.js'
-import Bot from '../structures/Client'
+import { sMessage } from '../types/Message'
+import { Bot } from './Client'
 
-export interface sMessage extends Message {
-    reply(options: InteractionReplyOptions)
-    //deferReply(options: InteractionDeferReplyOptions)
-    //deferUpdate(options: InteractionDeferUpdateOptions)
-    deleteReply: any
+export type CommandOptionsType = {
+    name: string
+    description: string
+    disabled: boolean
+    aliases?: Array<string>
 }
 
-class Command {
+export class Command {
     client: Bot
+    description: string
     name: string
     disabled: boolean
     aliases: Array<string>
     run: (message: sMessage, args: string) => void
 
-    constructor(client: Bot, options: any) {
+    constructor(client: Bot, options: CommandOptionsType) {
         this.client = client
         this.name = options.name
         this.disabled = options.disabled
@@ -30,4 +24,3 @@ class Command {
         //this.run = (message: sMessage, args: string) => { }
     }
 }
-export default Command
