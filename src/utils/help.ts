@@ -1,12 +1,11 @@
-import slashCommand from '../structures/slashCommand'
+import { slashCommand } from '../structures/slashCommand'
 import {
     MessageEmbed,
     MessageActionRow,
     MessageSelectMenu
 } from 'discord.js'
-import Config from '../../botconfig'
-const config = new Config()
-import Bot from '../structures/Client'
+import { config } from '../../botconfig'
+import { Bot } from '../structures/Client'
 
 export default {
     row: (dateNow: any) => {
