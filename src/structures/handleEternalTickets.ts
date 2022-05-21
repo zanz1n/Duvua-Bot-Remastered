@@ -1,22 +1,27 @@
-import slashCommand, { sInteraction } from './slashCommand'
-import Bot from './Client'
+import { Bot } from './Client'
+import { slashCommand } from './slashCommand'
+import { sInteraction } from '../types/Interaction'
+import { Embed as MessageEmbed } from '../types/Embed'
 import {
     MessageActionRow,
     MessageButton,
-    MessageEmbed,
     TextChannel,
     MessageComponentInteraction
 } from 'discord.js'
-import ticket from '../database/models/ticket'
-import guild from '../database/models/guild'
 
 module.exports = class extends slashCommand {
     constructor(client: Bot) {
         super(client, {
             name: "eternalTicket",
+            description: "",
+            ephemeral: false,
+            disabled: false
         })
     }
     run = async (interaction: sInteraction) => {
+        const ticket = this.client.db.models.Ticket
+        const guild = this.client.db.models.Guild
+
         const sleep = (ms: number) => { return new Promise(resolve => setTimeout(resolve, ms)) }
 
         const guilDb = await guild.findById(interaction.guild.id) ||
