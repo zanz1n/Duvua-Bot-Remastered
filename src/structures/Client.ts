@@ -14,15 +14,7 @@ export class Bot extends Client {
     public player: Player
 
     public constructor() {
-        super({
-            intents: [
-                Intents.FLAGS.GUILDS,
-                Intents.FLAGS.GUILD_MEMBERS,
-                Intents.FLAGS.GUILD_MESSAGES,
-                Intents.FLAGS.GUILD_VOICE_STATES
-            ],
-            partials: ['MESSAGE', 'REACTION']
-        })
+        super(config.client_init_options)
 
         this.login(this.config.token)
         this.loadSlashCommands()
