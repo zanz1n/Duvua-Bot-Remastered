@@ -1,11 +1,8 @@
-import Event from "../../structures/Event"
-import Bot from "../../structures/Client"
-import {
-    MessageEmbed
-} from 'discord.js'
-import guild from '../../database/models/guild'
-import member from '../../database/models/member'
-import Command, { sMessage } from '../../structures/Command'
+import { Event } from '../../structures/Event'
+import { Bot } from '../../structures/Client'
+import { Command } from '../../structures/Command'
+import { sMessage } from '../../types/Message'
+import { Embed as MessageEmbed } from '../../types/Embed'
 
 module.exports = class extends Event {
     constructor(client: Bot) {
@@ -16,8 +13,7 @@ module.exports = class extends Event {
     run = async (message: sMessage) => {
         if (message.author.bot) return
 
-        const guilDb = await guild.findById(message.guild.id) ||
-            await new guild({ _id: message.guild.id, name: message.guild.name });
+        const guilDb = await this.client.db.getGuildDbFromMember(message.member)
 
         await guilDb.save()
 
@@ -39,12 +35,7 @@ module.exports = class extends Event {
                 cmd.run(message, args)
             }
         } else {
-            const memberDb = await member.findById(message.guild.id + message.author.id) ||
-                new member({
-                    _id: message.guild.id + message.author.id,
-                    guildid: message.guild.id,
-                    usertag: message.author.tag
-                })
+            const memberDb = await this.client.db.getMemberDbFromMember(message.member)
 
             memberDb.xp++
             let meta = 3 * (memberDb.level ** 2)

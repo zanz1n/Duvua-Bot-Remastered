@@ -1,5 +1,5 @@
-import Event from '../../structures/Event'
-import Bot from '../../structures/Client'
+import { Event } from '../../structures/Event'
+import { Bot } from '../../structures/Client'
 
 module.exports = class extends Event {
     constructor(client: Bot) {
@@ -12,12 +12,8 @@ module.exports = class extends Event {
         this.client.user.setActivity(`use /help`)
         this.client.registrySlashCommands()
 
-        await this.client.connectToDatabase().then(() => {
-            console.log("\x1b[32m[mongoose-db] connected to the database \x1b[0m")
-        }).catch((err) => {
-            console.log("\x1b[31m[bot-err] Failed to connect to databse\x1b[0m")
-            process.exit(1)
-        })
+        this.client.db.connectToDatabase()
+
         function interGer(n: number) {
             return n - n % 1
         }

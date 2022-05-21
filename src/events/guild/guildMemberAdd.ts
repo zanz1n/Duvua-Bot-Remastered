@@ -1,9 +1,8 @@
-import Event from '../../structures/Event'
-import Bot from '../../structures/Client'
-import guild from '../../database/models/guild'
+import { Event } from '../../structures/Event'
+import { Bot } from '../../structures/Client'
+import { Embed as MessageEmbed } from '../../types/Embed'
 import {
     GuildMember,
-    MessageEmbed,
     TextChannel,
     ColorResolvable
 } from 'discord.js'
@@ -16,11 +15,7 @@ module.exports = class extends Event {
         })
     }
     run = async (member: GuildMember) => {
-        let guilDb = await guild.findById(member.guild.id)
-        if (!guilDb) {
-            guilDb = new guild({ _id: member.guild.id, name: member.guild.name })
-            await guilDb.save()
-        }
+        let guilDb = await this.client.db.getGuildDbFromMember(member)
 
         const channel = member.guild.channels.cache.get(guilDb.wellcome.channel) as TextChannel
 
