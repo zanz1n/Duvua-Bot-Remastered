@@ -1,102 +1,89 @@
-import { Client } from 'discord.js'
-import Config from '../../botconfig'
-import fs from 'fs'
-import mongoose from 'mongoose'
+import { Client, Intents } from 'discord.js'
+import { readdirSync } from 'fs'
 import { Player } from 'discord-player'
-import Command from './Command'
-import slashCommand from './slashCommand'
+import { Command } from './Command'
 import 'discord-player/smoothVolume'
+import { config } from '../../botconfig'
+import { Database } from '../database'
 
-const config = new Config()
-
-export default class Bot extends Client {
-    public commands: Array<Object>
-    public slashCommands: any
-    public config: Config
-    public db: any
+export class Bot extends Client {
+    public db = new Database
+    public commands = []
+    public slashCommands = []
+    public config = config
     public player: Player
 
-    constructor(options: any) {
-        super(options)
-        this.config = new Config()
-        this.commands = []
-        this.slashCommands = []
+    public constructor() {
+        super({
+            intents: [
+                Intents.FLAGS.GUILDS,
+                Intents.FLAGS.GUILD_MEMBERS,
+                Intents.FLAGS.GUILD_MESSAGES,
+                Intents.FLAGS.GUILD_VOICE_STATES
+            ],
+            partials: ['MESSAGE', 'REACTION']
+        })
+
+        this.login(this.config.token)
         this.loadSlashCommands()
         this.loadCommands()
         this.loadEvents()
         this.loadPlayer()
-
     }
 
-    loadSlashCommands(path = __dirname + '/../slashCommands') {
-        const categories = fs.readdirSync(path)
-        for (const category of categories) {
-            const slashCommands = fs.readdirSync(`${path}/${category}`)
+    private loadSlashCommands(path = __dirname + '/../slashCommands') {
+        for (const category of readdirSync(path)) {
 
-            for (const slashCommand of slashCommands) {
-                const slashCommandClass = require(`${path}/${category}/${slashCommand}`)
-                const scmd: slashCommand = new (slashCommandClass)(this)
+            for (const slashCommand of readdirSync(`${path}/${category}`)) {
 
-                if (scmd.disabled) {
-                    console.log(`\x1b[31m[bot-slashCommands] ${scmd.name} disabled\x1b[0m`)
-                } else {
+                const scmd = new (require(`${path}/${category}/${slashCommand}`))(this)
+
+                if (scmd.disabled) console.log(config.logs.disabled_slash_command(scmd.name))
+                else {
                     this.slashCommands.push(scmd)
-
-                    if (this.config.dev_mode && this.config.log_all_loads) {
-                        console.log(`\x1b[35m[bot-slashCommands] ${scmd.name} loaded\x1b[0m`)
-                    }
+                    if (this.config.dev_mode) console.log(config.logs.single_slash_command(scmd.name))
                 }
             }
-        }
-        console.log(`\x1b[33m[bot-api] All slashCommands loaded\x1b[0m`)
+        } console.log(`\x1b[33m[bot-api] All slashCommands loaded\x1b[0m`)
     }
-    loadCommands(path = __dirname + '/../commands') {
-        const categories = fs.readdirSync(path)
-        for (const category of categories) {
-            const commands = fs.readdirSync(`${path}/${category}`)
 
-            for (const slashCommand of commands) {
-                const commandClass = require(`${path}/${category}/${slashCommand}`)
-                const cmd: Command = new (commandClass)(this)
+    private loadCommands(path = __dirname + '/../commands') {
+        for (const category of readdirSync(path)) {
 
-                if (cmd.disabled) {
-                    console.log(`\x1b[31m[bot-legacyCommands] ${cmd.name} disabled\x1b[0m`)
-                } else {
+            for (const command of readdirSync(`${path}/${category}`)) {
+
+                const cmd: Command = new (require(`${path}/${category}/${command}`))(this)
+
+                if (cmd.disabled) console.log(config.logs.disabled_command(cmd.name))
+                else {
                     this.commands.push(cmd)
-
-                    if (this.config.dev_mode && this.config.log_all_loads) {
-                        console.log(`\x1b[34m[bot-legacyCommands] ${cmd.name} loaded\x1b[0m`)
-                    }
+                    if (this.config.dev_mode) console.log(config.logs.single_command(cmd.name))
                 }
             }
-        }
-        console.log(`\x1b[33m[bot-api] All legacyCommands loaded\x1b[0m`)
+        } console.log(`\x1b[33m[bot-api] All slashCommands loaded\x1b[0m`)
     }
-    loadEvents(path = __dirname + '/../events') {
-        const categories = fs.readdirSync(path)
-        for (const category of categories) {
-            const events = fs.readdirSync(`${path}/${category}`)
 
-            for (const event of events) {
-                const eventClass = require(`${path}/${category}/${event}`)
-                const evt = new (eventClass)(this)
+    private loadEvents(path = __dirname + '/../events') {
+        for (const category of readdirSync(path)) {
 
+            for (const event of readdirSync(`${path}/${category}`)) {
+
+                const evt: any = new (require(`${path}/${category}/${event}`))(this)
+
+                if (this.config.dev_mode) console.log(this.config.logs.single_event(evt.name))
                 this.on(evt.name, evt.run)
-                if (this.config.dev_mode && this.config.log_all_loads) {
-                    console.log(`\x1b[36m[bot-events] Event ${evt.name} loaded\x1b[0m`)
-                }
             }
-        }
-        console.log(`\x1b[33m[bot-api] All events loaded\x1b[0m`)
+        } console.log(`\x1b[33m[bot-api] All slashCommands loaded\x1b[0m`)
     }
-    registrySlashCommands() {
-        if (this.config.dev_mode) {
-            this.guilds.cache.get(this.config.serverid).commands.set(this.slashCommands)
-        } else {
-            this.application.commands.set(this.slashCommands)
-        }
+
+    public registrySlashCommands() {
+        if (this.config.dev_mode)
+            this.guilds.cache.get(this.config.serverid).commands
+                .set(this.slashCommands)
+        else this.application.commands
+            .set(this.slashCommands)
     }
-    loadPlayer() {
+    public loadPlayer() {
         this.player = new Player(this, {
             ytdlOptions: {
                 quality: "highestaudio",
@@ -104,12 +91,5 @@ export default class Bot extends Client {
             }
         })
         console.log("\x1b[32m[bot-player] connected to the Player\x1b[0m")
-    }
-    async connectToDatabase() {
-        const connection = await mongoose.connect(config.mongodb_url, {
-            autoIndex: false,
-            keepAlive: true
-        })
-        this.db = connection
     }
 }
