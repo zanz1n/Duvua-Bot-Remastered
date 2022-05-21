@@ -7,7 +7,7 @@ class Config {
     public name = "Oyne Bot"
     public embed_default_color: ColorResolvable = "#0000FF"
     public prefix = "-"
-    public dev_mode = true
+    public dev_mode = false
     public mongodb_url = process.env.MONGODB_URL
     public cost = "R$: 10,99"
     public client_init_options = {
