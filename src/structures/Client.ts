@@ -11,7 +11,13 @@ export class Bot extends Client {
     public commands = []
     public slashCommands = []
     public config = config
-    public player: Player
+
+    public player = new Player(this, {
+        ytdlOptions: {
+            quality: "highestaudio",
+            highWaterMark: 1 << 25
+        }
+    })
 
     public constructor() {
         super(config.client_init_options)
@@ -20,7 +26,6 @@ export class Bot extends Client {
         this.loadSlashCommands()
         this.loadCommands()
         this.loadEvents()
-        this.loadPlayer()
     }
 
     private loadSlashCommands(path = __dirname + '/../slashCommands') {
@@ -74,14 +79,5 @@ export class Bot extends Client {
                 .set(this.slashCommands)
         else this.application.commands
             .set(this.slashCommands)
-    }
-    public loadPlayer() {
-        this.player = new Player(this, {
-            ytdlOptions: {
-                quality: "highestaudio",
-                highWaterMark: 1 << 25
-            }
-        })
-        console.log("\x1b[32m[bot-player] connected to the Player\x1b[0m")
     }
 }
