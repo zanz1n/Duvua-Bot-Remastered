@@ -50,6 +50,14 @@ module.exports = class extends slashCommand {
         const random = (min: number, max: number) => Math.floor(Math.random() * (max - min) + min)
 
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
+            .setFooter({
+                text: `Requisitado por ${interaction.user.username}`,
+                iconURL: `${interaction.user.displayAvatarURL({
+                    dynamic: false,
+                    format: 'png',
+                    size: 128
+                })}`
+            })
 
         if (number.length > 20) {
             embed.setDescription(`**Não insira um número muito grande, ${interaction.user}**`)
