@@ -10,6 +10,7 @@ services:
       BOT_TOKEN: ${PRE_BOT_TOKEN}
       SERVER_ID: ${PRE_SERVER_ID}
       MONGODB_URL: ${PRE_MONGODB_URL}
+      GOOGLE_MAPS_API_KEY: ${PRE_GOOGLE_MAPS_API_KEY}
     volumes:
       - ./:/server
     networks:

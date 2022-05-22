@@ -1,14 +1,22 @@
 import { ColorResolvable, Intents } from "discord.js"
 import 'dotenv/config'
 
+const {
+    BOT_TOKEN,
+    SERVER_ID,
+    MONGODB_URL,
+    GOOGLE_MAPS_API_KEY
+} = process.env
+
 class Config {
-    public token = process.env.BOT_TOKEN
-    public serverid = process.env.SERVER_ID
+    public token = BOT_TOKEN
+    public serverid = SERVER_ID
     public name = "Oyne Bot"
     public embed_default_color: ColorResolvable = "#0000FF"
     public prefix = "-"
-    public dev_mode = false
-    public mongodb_url = process.env.MONGODB_URL
+    public dev_mode = true
+    public mongodb_url = MONGODB_URL
+    public maps_api_key = GOOGLE_MAPS_API_KEY
     public cost = "R$: 10,99"
     public client_init_options = {
         intents: [
