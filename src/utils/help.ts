@@ -12,11 +12,36 @@ export default {
         return new MessageActionRow().addComponents(
             new MessageSelectMenu().setCustomId('help').setPlaceholder('Escolha a categoria').setMinValues(1).setMaxValues(1)
                 .addOptions([
-                    { label: "Fun", value: `fun${dateNow}`, description: "Comandos para descontrair", emoji: "🥳", },
-                    { label: "Info", value: `info${dateNow}`, description: "Comandos para ver informações sobre o bot", emoji: "ℹ️" },
-                    { label: "Moderation / Utility", value: `mod-util${dateNow}`, description: "Comandos para auxiliar na moderação e organização do server", emoji: "🖋️" },
-                    { label: "Music", value: `music${dateNow}`, description: "Comandos para tocar musicas do youtube", emoji: "🎧" },
-                    { label: "Money / Level", value: `money${dateNow}`, description: "Comandos relacionados ao sistema monetário e de ranks do bot", emoji: "💸" },
+                    {
+                        label: "Fun", value: `fun${dateNow}`,
+                        description: "Comandos para descontrair",
+                        emoji: "🥳",
+                    },
+                    {
+                        label: "Info",
+                        value: `info${dateNow}`,
+                        description: "Comandos para ver informações sobre o bot",
+                        emoji: "ℹ️"
+                    },
+                    {
+                        label:
+                            "Moderation / Utility",
+                        value: `mod-util${dateNow}`,
+                        description: "Comandos para auxiliar na moderação e organização do server",
+                        emoji: "🖋️"
+                    },
+                    {
+                        label: "Music",
+                        value: `music${dateNow}`,
+                        description: "Comandos para tocar musicas do youtube",
+                        emoji: "🎧"
+                    },
+                    {
+                        label: "Money / Level",
+                        value: `money${dateNow}`,
+                        description: "Comandos relacionados ao sistema monetário e de ranks do bot",
+                        emoji: "💸"
+                    },
                 ])
         )
     },
@@ -40,27 +65,36 @@ export default {
 
         return new MessageEmbed().setColor(client.config.embed_default_color)
             .addField("🥳 Fun", "Comandos for fun e de diversão em geral.")
-            .addField("\:globe_with_meridians:\:m: kiss", find("kiss"), true).addField("\:globe_with_meridians:\:m: avatar", find("avatar"), true)
-            .addField("\:m: bruno", "Não falamos do Bruno", true).addField("\:globe_with_meridians: meme", find("meme"), true)
+            .addField("\:globe_with_meridians:\:m: kiss", find("kiss"), true)
+            .addField("\:globe_with_meridians:\:m: avatar", find("avatar"), true)
+            .addField("\:m: bruno", "Não falamos do Bruno", true)
+            .addField("\:globe_with_meridians: meme", find("meme"), true)
             .addField("\:globe_with_meridians: facts year", "Exibe curiosidades sobre um ano", true)
             .addField("\:globe_with_meridians: facts number", "Exibe curiosidades sobre um número", true)
+            .addField("\:globe_with_meridians: iss", find("iss"), true)
+            .addField("\:globe_with_meridians: starwars", find("starwars"), true)
     },
     info: (client: Bot, user: any, guilDb: any) => {
         const find = (command: string) => { return client.slashCommands.find((c: slashCommand) => c.name === command).description || "Command not found" }
 
         return new MessageEmbed().setColor(client.config.embed_default_color)
             .addField("ℹ️ Info", "Comandos de inforomação em geral.")
-            .addField("\:globe_with_meridians:\:m: ping", find("ping"), true).addField("\:globe_with_meridians: info", find("info"), true)
-            .addField("\:globe_with_meridians:\:m: help", find("help"), true).addField("\:globe_with_meridians:\:m: anime", find("anime"), true)
-            .addField("\:globe_with_meridians: github", find("github"), true).addField("*", "*", true)
+            .addField("\:globe_with_meridians:\:m: ping", find("ping"), true)
+            .addField("\:globe_with_meridians: info", find("info"), true)
+            .addField("\:globe_with_meridians:\:m: help", find("help"), true)
+            .addField("\:globe_with_meridians:\:m: anime", find("anime"), true)
+            .addField("\:globe_with_meridians: github", find("github"), true)
+            .addField("*", "*", true)
     },
     modUtil: (client: Bot, user: any, guilDb: any) => {
         const find = (command: string) => { return client.slashCommands.find((c: slashCommand) => c.name === command).description || "Command not found" }
 
         return new MessageEmbed().setColor(client.config.embed_default_color)
             .addField("🖋️ Utilidade / Moderação", "Comandos para auxiliar na moderação e organização do server.")
-            .addField("\:globe_with_meridians: embed", find("embed"), true).addField("\:globe_with_meridians: say", find("say"), true)
-            .addField("\:globe_with_meridians: clear", find("clear"), true).addField("\:globe_with_meridians: ban", find("ban"), true)
+            .addField("\:globe_with_meridians: embed", find("embed"), true)
+            .addField("\:globe_with_meridians: say", find("say"), true)
+            .addField("\:globe_with_meridians: clear", find("clear"), true)
+            .addField("\:globe_with_meridians: ban", find("ban"), true)
             .addField("\:globe_with_meridians: config wellcome", "Altera a mensagem de boas vindas", true)
             .addField("\:globe_with_meridians: config prefix", "Altera o prefixo do bot no servidor", true)
         //.addField("\:information_source: Dica", "**Nos comandos say e embed, use /n para quebrar linha.**")
@@ -70,10 +104,14 @@ export default {
 
         return new MessageEmbed().setColor(client.config.embed_default_color)
             .addField("🎧 Música", "Todos os comandos relacionados a músicas.")
-            .addField("\:globe_with_meridians:\:m: play", find("play"), true).addField("\:globe_with_meridians:\:m: queue", find("queue"), true)
-            .addField("\:globe_with_meridians: pause", find("pause"), true).addField("\:globe_with_meridians: resume", find("resume"), true)
-            .addField("\:globe_with_meridians:\:m: skip", find("skip"), true).addField("\:globe_with_meridians: songinfo", find("songinfo"), true)
-            .addField("\:globe_with_meridians:\:m: stop", find("stop"), true).addField("\:globe_with_meridians: dj add", "Adiciona um dj no server", true)
+            .addField("\:globe_with_meridians:\:m: play", find("play"), true)
+            .addField("\:globe_with_meridians:\:m: queue", find("queue"), true)
+            .addField("\:globe_with_meridians: pause", find("pause"), true)
+            .addField("\:globe_with_meridians: resume", find("resume"), true)
+            .addField("\:globe_with_meridians:\:m: skip", find("skip"), true)
+            .addField("\:globe_with_meridians: songinfo", find("songinfo"), true)
+            .addField("\:globe_with_meridians:\:m: stop", find("stop"), true)
+            .addField("\:globe_with_meridians: dj add", "Adiciona um dj no server", true)
             .addField("\:globe_with_meridians: dj remove", "Remove algum dj do server", true)
 
             .addField("\:information_source: Dica", "**Dj podem controlar playlists e músicas sem que precisem de permissões adminitrativas no server.**")
