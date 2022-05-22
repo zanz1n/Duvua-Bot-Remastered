@@ -14,7 +14,7 @@ class Config {
     public name = "Oyne Bot"
     public embed_default_color: ColorResolvable = "#0000FF"
     public prefix = "-"
-    public dev_mode = true
+    public dev_mode = false
     public mongodb_url = MONGODB_URL
     public maps_api_key = GOOGLE_MAPS_API_KEY
     public cost = "R$: 10,99"
