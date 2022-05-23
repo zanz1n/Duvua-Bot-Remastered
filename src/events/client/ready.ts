@@ -12,7 +12,9 @@ module.exports = class extends Event {
         this.client.user.setActivity(`use /help`)
         this.client.registrySlashCommands()
 
-        this.client.db.connectToDatabase()
+        await this.client.db.connectToDatabase()
+
+        await this.client.manager.init(this.client.user.id)
 
         function interGer(n: number) {
             return n - n % 1
