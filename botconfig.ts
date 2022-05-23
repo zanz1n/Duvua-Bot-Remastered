@@ -5,7 +5,9 @@ const {
     BOT_TOKEN,
     SERVER_ID,
     MONGODB_URL,
-    GOOGLE_MAPS_API_KEY
+    GOOGLE_MAPS_API_KEY,
+    LAVALINK_PASSWORD,
+    LAVALINK_HOST
 } = process.env
 
 class Config {
@@ -17,6 +19,8 @@ class Config {
     public dev_mode = false
     public mongodb_url = MONGODB_URL
     public maps_api_key = GOOGLE_MAPS_API_KEY
+    public lavalink_password = LAVALINK_PASSWORD
+    public lavalink_host = LAVALINK_HOST
     public cost = "R$: 10,99"
     public client_init_options = {
         intents: [
@@ -37,7 +41,7 @@ class Config {
         single_event(name: string) {
             return `\x1b[36m[bot-events] Event ${name} loaded\x1b[0m`
         },
-        all_events_loaded: "\x1b[33m[bot-api] All events loaded\x1b[0m",
+        all_events_loaded: "\x1b[33m[client] All events loaded\x1b[0m",
         single_slash_command(name: string) {
             return `\x1b[35m[bot-slashCommands] ${name} loaded\x1b[0m`
         },
@@ -50,6 +54,12 @@ class Config {
         disabled_command(name: string) {
             return `\x1b[31m[bot-legacyCommands] ${name} disabled\x1b[0m`
         },
+        lavalink_logs(name: String) {
+            return `\x1b[33m[lavalink-info] ${name}\x1b[0m`
+        },
+        lavalink_err(name: String) {
+            return `\x1b[31m[lavalink-err] ${name}\x1b[0m`
+        }
     }
 }
 
