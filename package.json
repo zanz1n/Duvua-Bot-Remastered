@@ -21,6 +21,7 @@
     "discord-player": "^5.2.2",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.1",
+    "erela.js": "^2.3.3",
     "ffmpeg-static": "^5.0.0",
     "mal-scraper": "^2.11.4",
     "mongoose": "^6.3.1",
