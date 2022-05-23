@@ -7,7 +7,6 @@ import {
     MessageActionRow,
     GuildMember
 } from 'discord.js'
-import { QueryType } from 'discord-player'
 
 module.exports = class extends Command {
     constructor(client: Bot) {

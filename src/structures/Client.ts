@@ -1,6 +1,5 @@
 import { Client, Intents } from 'discord.js'
 import { readdirSync } from 'fs'
-import { Player } from 'discord-player'
 import { Command } from './Command'
 import 'discord-player/smoothVolume'
 import { config } from '../../botconfig'
