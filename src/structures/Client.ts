@@ -5,6 +5,7 @@ import { Command } from './Command'
 import 'discord-player/smoothVolume'
 import { config } from '../../botconfig'
 import { Database } from '../database'
+import { Manager } from 'erela.js'
 
 export class Bot extends Client {
     public db = new Database
@@ -12,12 +13,28 @@ export class Bot extends Client {
     public slashCommands = []
     public config = config
 
-    public player = new Player(this, {
-        ytdlOptions: {
-            quality: "highestaudio",
-            highWaterMark: 1 << 25
+    public manager = new Manager({
+        nodes: [{
+            host: this.config.lavalink_host,
+            password: this.config.lavalink_password,
+            retryDelay: 5000,
+        }],
+        autoPlay: true,
+        send: (id, payload) => {
+            const guild = this.guilds.cache.get(id);
+            if (guild) guild.shard.send(payload);
         }
     })
+        .on("nodeConnect", (node) => {
+            console.log(
+                this.config.logs.lavalink_logs(`Node "${node.options.identifier}" connected`)
+            )
+        })
+        .on("nodeError", (node, error) => {
+            console.log(
+                this.config.logs.lavalink_err(`Node "${node.options.identifier}" encountered an error: ${error.message}.`)
+            )
+        })
 
     public constructor() {
         super(config.client_init_options)
@@ -71,6 +88,27 @@ export class Bot extends Client {
                 this.on(evt.name, evt.run)
             }
         } console.log(`\x1b[33m[bot-api] All slashCommands loaded\x1b[0m`)
+    }
+
+    public parseMsIntoFormatData(n: string | Number) {
+        function interGer(n: number) {
+            return n - n % 1
+        }
+        const timeOut = Number(n)
+        const hour = interGer(timeOut / 3600000)
+        const minutes = interGer(timeOut / 60000 - hour * 60)
+        const seconds = interGer(timeOut / 1000 - minutes * 60 - hour * 3600)
+
+        let formatData: string
+
+        if (hour != 0) {
+            formatData = `${hour}h:${minutes}m:${seconds}s`
+        } if (hour == 0 || !hour) {
+            formatData = `${minutes}m:${seconds}s`
+        } if (minutes == 0) {
+            formatData = `${seconds}s`
+        }
+        return formatData
     }
 
     public registrySlashCommands() {
