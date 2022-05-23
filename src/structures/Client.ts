@@ -1,7 +1,6 @@
 import { Client, Intents } from 'discord.js'
 import { readdirSync } from 'fs'
 import { Command } from './Command'
-import 'discord-player/smoothVolume'
 import { config } from '../../botconfig'
 import { Database } from '../database'
 import { Manager } from 'erela.js'
