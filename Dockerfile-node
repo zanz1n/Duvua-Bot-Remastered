@@ -1,0 +1,5 @@
+FROM node:16
+
+WORKDIR /server
+
+CMD echo 'Starting Bot [...]\n' && yarn install && yarn build && yarn prod

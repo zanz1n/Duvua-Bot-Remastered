@@ -1,0 +1,6 @@
+FROM openjdk:17
+
+WORKDIR /server
+COPY ./.lavalink .
+
+CMD echo "Starting Lavalink [...]\n" && java -Xmx1024M -Xms64M -jar Lavalink.jar

@@ -1,27 +1,31 @@
 version: '3.7'
 
 services:
-  dcbot_node:
+  node:
     build:
       context: .
+      dockerfile: Dockerfile-node
     restart: always
-    container_name: dcbot_node
+    container_name: node
     environment:
       BOT_TOKEN: ${PRE_BOT_TOKEN}
       SERVER_ID: ${PRE_SERVER_ID}
       MONGODB_URL: ${PRE_MONGODB_URL}
       GOOGLE_MAPS_API_KEY: ${PRE_GOOGLE_MAPS_API_KEY}
+      LAVALINK_PASSWORD: ${PRE_LAVALINK_PASSWORD}
+      LAVALINK_HOST: lavalink
     volumes:
       - ./:/server
     networks:
       dcbot:
     depends_on:
-      - dcbot_mongo
+      - mongodb
+      - lavalink
 
-  dcbot_mongo:
+  mongodb:
     image: mongo
     restart: always
-    container_name: dcbot_mongo
+    container_name: mongodb
     ports:
       - 25535:27017
     environment:
@@ -29,14 +33,23 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${PRE_MONGODB_PASSWORD}
     command: mongod --logpath=/dev/null
     volumes:
-      - dcbot_mongo_volume:/data/db
+      - mongo_volume:/data/db
     networks:
       dcbot:
-
+  lavalink:
+    build:
+      context: .
+      dockerfile: Dockerfile-lava
+    #restart: always
+    container_name: lavalink
+    environment:
+      LAVALINK_PASSWORD: ${PRE_LAVALINK_PASSWORD}
+    networks:
+      dcbot:
 
 networks:
   dcbot:
     driver: bridge
 
 volumes:
-  dcbot_mongo_volume:
+  mongo_volume:
