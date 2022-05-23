@@ -16,22 +16,24 @@ module.exports = class extends Command {
         })
     }
     run = async (message: sMessage) => {
-        const { guild, author } = message
-        const queue = this.client.player.getQueue(message.guild.id)
+        const player = this.client.manager.get(message.guild.id)
+
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
 
-        if (!queue) {
-            embed.setDescription(`**Não há nenhum som na fila,  ${message.author}}**`)
-            return await message.reply({ content: null, embeds: [embed] })
-        }
         const memberDb = await this.client.db.getMemberDbFromMember(message.member)
 
+        if (!player || !player.queue.current) {
+            embed.setDescription(`**Não há nenhum som na fila,  ${message.author}**`)
+            return message.reply({ content: null, embeds: [embed] })
+        }
+
         if (message.member.permissions.has(Permissions.FLAGS.MOVE_MEMBERS) || memberDb.dj) {
-            queue.destroy()
+            player.destroy()
+
             embed.setDescription(`**A fila foi limpa por ${message.author}**`)
-            return await message.reply({ content: null, embeds: [embed] })
+            await message.reply({ content: null, embeds: [embed] })
         } else {
-            embed.setDescription(`**Você não tem permissão para usar esse comando, ${message.author}**`)
+            embed.setDescription(`**Você não tem permissão para usar esse comando,  ${message.author}**`)
             return await message.reply({ content: null, embeds: [embed] })
         }
     }

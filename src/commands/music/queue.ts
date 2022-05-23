@@ -13,23 +13,37 @@ module.exports = class extends Command {
         })
     }
     run = async (message: sMessage) => {
+        const player = this.client.manager.get(message.guild.id)
+
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
-        const queue = this.client.player.getQueue(message.guild.id)
 
-        if (!queue) {
-            embed.setDescription(`**Não há nenhum som na fila, ${message.author}**`)
-            return await message.reply({ content: null, embeds: [embed] })
-        } else {
-            const queueString = queue.tracks.join("\n")
-            const currentSong = queue.current
-
-            embed.setDescription("**Tocando**\n" +
-                (currentSong ? `\`[${currentSong.duration}]\` ${currentSong.title} -- <@${currentSong.requestedBy.id}>` : null) +
-                `\n\n**Lista**\n${queueString}`)
-                .setFooter({ text: `Requisitado por ${message.author.username}`, iconURL: message.author.displayAvatarURL() }).setTimestamp()
-                .setThumbnail(currentSong.thumbnail)
-
-            await message.reply({ content: null, embeds: [embed] })
+        if (!player || !player.queue.current) {
+            embed.setDescription(`**Não há nenhum som na fila,  ${message.author}**`)
+            return message.reply({ content: null, embeds: [embed] })
         }
+
+        const tracks = player.queue.slice(0, player.queue.size)
+
+        function getRequesterMention(track: any) {
+            return `<@${track.requester.id}>`
+        }
+        const queueString = tracks.map((track, i) =>
+            `${0 + (++i)} - [${this.client.parseMsIntoFormatData(track.duration)}] - ` +
+            `${getRequesterMention(track)} - [${track.title}](${track.uri})`).join("\n")
+
+        const currentSong = player.queue.current
+        const formatedDuration = this.client.parseMsIntoFormatData(currentSong.duration)
+
+        const requester: any = currentSong.requester
+
+        embed.setDescription("**Tocando**\n" +
+            (currentSong ? `[${formatedDuration}] - <@${requester.id}> - [${currentSong.title}](${currentSong.uri})` : null) +
+            `\n\n**Lista**\n${queueString}`
+        ).setFooter({
+            text: `Requisitado por ${message.author.username}`,
+            iconURL: message.author.displayAvatarURL()
+        }).setThumbnail(currentSong.thumbnail)
+
+        message.reply({ content: null, embeds: [embed] })
     }
 }
