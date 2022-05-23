@@ -16,23 +16,29 @@ module.exports = class extends slashCommand {
         })
     }
     run = async (interaction: sInteraction) => {
-        const queue = this.client.player.getQueue(interaction.guildId)
+        const player = this.client.manager.get(interaction.guild.id)
 
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
 
-        if (!queue) {
-            embed.setDescription(`**Não há nenhum som na fila,  ${interaction.user}**`)
-            return await interaction.editReply({ content: null, embeds: [embed] })
-        }
-
-        const { user } = interaction
         const memberDb = await this.client.db.getMemberDbFromMember(interaction.member)
 
-        if (interaction.memberPermissions.has(Permissions.FLAGS.MOVE_MEMBERS) ||
-            interaction.user === queue.current.requestedBy || memberDb.dj) {
-            queue.skip()
+        if (!player || !player.queue.current) {
+            embed.setDescription(`**Não há nenhum som na fila,  ${interaction.user}**`)
+            return interaction.editReply({ content: null, embeds: [embed] })
+        }
 
-            embed.setDescription(`**Música** ${queue.current.title} **pulada por ${interaction.user}**`)
+        const requester: any = player.queue.current.requester
+
+        if (interaction.memberPermissions.has(Permissions.FLAGS.MOVE_MEMBERS) ||
+            interaction.user.id === requester.id || memberDb.dj) {
+            embed.setDescription(`**Música** ${player.queue.current.title} **pulada por ${interaction.user}**`)
+
+            if (player.queue.size < 1) {
+                player.destroy()
+            } else {
+                player.stop()
+            }
+
             return await interaction.editReply({ content: null, embeds: [embed] })
         } else {
             embed.setDescription(`**Você não pode pular uma música que não solicitou, ${interaction.user}**`)

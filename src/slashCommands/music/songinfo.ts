@@ -17,20 +17,17 @@ module.exports = class extends slashCommand {
         })
     }
     run = async (interaction: sInteraction) => {
-        const queue = this.client.player.getQueue(interaction.guildId)
+        const player = this.client.manager.get(interaction.guild.id)
 
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
 
-        if (!queue) {
+        if (!player || !player.queue.current) {
             embed.setDescription(`**Não há nenhum som na fila,  ${interaction.user}**`)
-            return await interaction.editReply({ content: null, embeds: [embed] })
+            return interaction.editReply({ content: null, embeds: [embed] })
         }
 
-        let bar = queue.createProgressBar({
-            length: 19
-        })
+        const song = player.queue.current
 
-        const song = queue.current
         const skip = new MessageButton()
             .setCustomId(`skip`)
             .setEmoji(`⏭️`)
@@ -54,7 +51,12 @@ module.exports = class extends slashCommand {
 
         const button = new MessageActionRow().addComponents(skip, stop, pause, resume)
 
-        embed.setThumbnail(song.thumbnail).setDescription(`**${interaction.user}**\n\nTocando agora: [${song.title}](${song.url})\n\n**Duração: [${song.duration}]**\n\n ${bar}`)
+        const formatData = this.client.parseMsIntoFormatData(song.duration)
+
+        embed.setDescription(`${interaction.user}\n\n` +
+            `Tocando agora: **[${song.title}](${song.uri})**\n\n**` +
+            `Duração: [${formatData}]**`)
+            .setThumbnail(song.displayThumbnail('default'))
 
         await interaction.editReply({ content: null, embeds: [embed], components: [button] })
     }

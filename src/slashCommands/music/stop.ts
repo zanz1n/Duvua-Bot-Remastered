@@ -17,19 +17,19 @@ module.exports = class extends slashCommand {
         })
     }
     run = async (interaction: sInteraction) => {
-        const queue = this.client.player.getQueue(interaction.guildId)
+        const player = this.client.manager.get(interaction.guild.id)
 
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
 
-        const { user } = interaction
         const memberDb = await this.client.db.getMemberDbFromMember(interaction.member)
 
-        if (!queue) {
+        if (!player || !player.queue.current) {
             embed.setDescription(`**Não há nenhum som na fila,  ${interaction.user}**`)
-            return await interaction.editReply({ content: null, embeds: [embed] })
+            return interaction.editReply({ content: null, embeds: [embed] })
         }
+
         if (interaction.memberPermissions.has(Permissions.FLAGS.MOVE_MEMBERS) || memberDb.dj) {
-            queue.destroy()
+            player.destroy()
 
             embed.setDescription(`**A fila foi limpa por ${interaction.user}**`)
             await interaction.editReply({ content: null, embeds: [embed] })

@@ -18,27 +18,34 @@ module.exports = class extends slashCommand {
         })
     }
     run = async (interaction: sInteraction) => {
-        const queue = this.client.player.getQueue(interaction.guildId)
+        const player = this.client.manager.get(interaction.guild.id)
 
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
 
-        const { user } = interaction
         const memberDb = await this.client.db.getMemberDbFromMember(interaction.member)
 
-        if (!queue) {
+        if (!player || !player.queue.current) {
             embed.setDescription(`**Não há nenhum som na fila,  ${interaction.user}**`)
-            return await interaction.editReply({ content: null, embeds: [embed] })
+            return interaction.editReply({ content: null, embeds: [embed] })
         }
         if (interaction.memberPermissions.has(Permissions.FLAGS.MOVE_MEMBERS) || memberDb.dj) {
-            queue.setPaused(false)
-            const pause = new MessageButton()
-                .setCustomId('pause')
-                .setEmoji(`⏸️`)
-                .setLabel('Pause')
-                .setStyle('PRIMARY')
-            const button = new MessageActionRow().addComponents(pause)
-            embed.setDescription(`**Fila despausado por ${interaction.user}**\nUse /pause para pausá-lo`)
-            await interaction.editReply({ content: null, embeds: [embed], components: [button] })
+            if (!player.paused) {
+                embed.setDescription(`**O player não esta pausado, ${interaction.user}**`)
+            } else {
+                player.pause(false)
+                embed.setDescription(`**Fila despausada por ${interaction.user}**\n` +
+                    `Use /pause para pausá-lo`)
+
+                const pause = new MessageButton()
+                    .setCustomId('pause')
+                    .setEmoji(`⏸️`)
+                    .setLabel('Pause')
+                    .setStyle('PRIMARY')
+                const button = new MessageActionRow().addComponents(pause)
+                return interaction.editReply({ content: null, embeds: [embed], components: [button] })
+            }
+
+            await interaction.editReply({ content: null, embeds: [embed] })
         } else {
             embed.setDescription(`**Você não tem permissão para usar esse comando,  ${interaction.user}**`)
             return await interaction.editReply({ content: null, embeds: [embed] })

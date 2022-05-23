@@ -3,10 +3,10 @@ import { sInteraction } from '../../types/Interaction'
 import { Bot } from '../../structures/Client'
 import { Embed as MessageEmbed } from '../../types/Embed'
 import {
+    GuildMember,
     MessageActionRow,
     MessageButton,
 } from "discord.js"
-import { QueryType } from 'discord-player'
 
 module.exports = class extends slashCommand {
     constructor(client: Bot) {
@@ -27,46 +27,74 @@ module.exports = class extends slashCommand {
     }
     run = async (interaction: sInteraction) => {
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
-        const member = interaction.member as any
+        const member = interaction.member as GuildMember
 
         if (!member.voice.channel) {
             embed.setDescription(`**Você prefisa estart em um canal de voz para tocar uma música, ${interaction.user}**`)
             return interaction.editReply({ content: null, embeds: [embed] })
         }
-        const queue = this.client.player.createQueue(interaction.guild)
-        if (!queue.connection) await queue.connect(member.voice.channel)
 
         if (interaction.options.getString("som").length > 80) {
             embed.setDescription(`**Não pesquiso nada com mais de 80 caracteres, ${interaction.user}**`)
             return interaction.editReply({ content: null, embeds: [embed] })
         }
 
-        let url = interaction.options.getString("som")
-        var result = await this.client.player.search(url, {
-            requestedBy: interaction.user,
-            searchEngine: QueryType.YOUTUBE_VIDEO
+        const player = this.client.manager.create({
+            guild: interaction.guild.id,
+            voiceChannel: member.voice.channel.id,
+            textChannel: interaction.channel.id,
         })
 
-        if (result.tracks.length == 0) {
-            result = await this.client.player.search(url, {
-                requestedBy: interaction.user,
-                searchEngine: QueryType.YOUTUBE_SEARCH
-            })
+        if (player.state !== 'CONNECTED') await player.connect()
 
-            if (result.tracks.length == 0) {
-                embed.setDescription(`**Nenhum som "${interaction.options.getString("som")}" encontrado, ${interaction.user}**`)
-                return interaction.editReply({ content: null, embeds: [embed] })
-            }
+        const search = interaction.options.getString('som')
+
+        const res = await player.search(search, interaction.user)
+
+        if (this.client.config.dev_mode) console.log(res.loadType)
+
+        if (res.loadType === 'LOAD_FAILED') {
+            if (!player.queue.current) player.destroy()
+            embed.setDescription(`**Ocorreu um erro enquanto sua música era carregada, ${interaction.user}**`)
+            return interaction.editReply({ content: null, embeds: [embed] })
         }
+        else if (res.loadType === 'PLAYLIST_LOADED') {
+            if (!player.queue.current) player.destroy()
 
-        const song = result.tracks[0]
-        queue.addTrack(song)
+            embed.setDescription(`**Playlists não são permitidas, ${interaction.user}**`)
+            return interaction.editReply({ content: null, embeds: [embed] })
+        }
+        else if (res.loadType === 'NO_MATCHES') {
+            if (!player.queue.current) player.destroy()
+            embed.setDescription(`**Nenhuma música foi encontrada, ${interaction.user}**`)
+            return interaction.editReply({ content: null, embeds: [embed] })
+        }
+        else if (res.loadType === 'TRACK_LOADED') {
+            player.queue.add(res.tracks[0])
 
-        embed.setDescription(`**[${song.title}](${song.url})** foi adicionada a playlist\n\n**Duração: [${song.duration}]**`)
-            .setThumbnail(song.thumbnail)
-            .setFooter({ text: `Requisitado por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() }).setTimestamp()
+            const song = res.tracks[0]
+            const formatData = this.client.parseMsIntoFormatData(song.duration)
 
-        if (!queue.playing) await queue.play()
+            if (!player.playing && !player.paused && !player.queue.size) player.play()
+
+            embed.setDescription(`**[${song.title}](${song.uri})** foi adicionada a playlist\n\n**` +
+                `Duração: [${formatData}]**`)
+                .setThumbnail(song.displayThumbnail('default'))
+                .setFooter({ text: `Requisitado por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() })
+        }
+        else if (res.loadType === 'SEARCH_RESULT') {
+            player.queue.add(res.tracks[0])
+
+            const song = res.tracks[0]
+            const formatData = this.client.parseMsIntoFormatData(song.duration)
+
+            if (!player.playing && !player.paused && !player.queue.size) player.play()
+
+            embed.setDescription(`**[${song.title}](${song.uri})** foi adicionada a playlist\n\n**` +
+                `Duração: [${formatData}]**`)
+                .setThumbnail(song.displayThumbnail('default'))
+                .setFooter({ text: `Requisitado por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() })
+        }
 
         const skip = new MessageButton()
             .setCustomId(`skip`)

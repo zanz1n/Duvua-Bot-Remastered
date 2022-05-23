@@ -13,23 +13,36 @@ module.exports = class extends slashCommand {
         })
     }
     run = async (interaction: sInteraction) => {
-        const queue = this.client.player.getQueue(interaction.guildId)
+        const player = this.client.manager.get(interaction.guild.id)
+
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
 
-        if (!queue || !queue.playing) {
-            embed.setDescription(`**Não há nenhum som na fila**`)
-            return await interaction.editReply({ content: null, embeds: [embed] })
+        if (!player || !player.queue.current) {
+            embed.setDescription(`**Não há nenhum som na fila,  ${interaction.user}**`)
+            return interaction.editReply({ content: null, embeds: [embed] })
         }
 
-        const queueString = queue.tracks.join("\n")
-        const currentSong = queue.current
+        const tracks = player.queue.slice(0, player.queue.size)
+
+        function getRequesterMention(track: any) {
+            return `<@${track.requester.id}>`
+        }
+        const queueString = tracks.map((track, i) =>
+            `${0 + (++i)} - [${this.client.parseMsIntoFormatData(track.duration)}] - ` +
+            `${getRequesterMention(track)} - [${track.title}](${track.uri})`).join("\n")
+
+        const currentSong = player.queue.current
+        const formatedDuration = this.client.parseMsIntoFormatData(currentSong.duration)
+
+        const requester: any = currentSong.requester
 
         embed.setDescription("**Tocando**\n" +
-            (currentSong ? `\`[${currentSong.duration}]\` ${currentSong.title} -- <@${currentSong.requestedBy.id}>` : null) +
+            (currentSong ? `[${formatedDuration}] - <@${requester.id}> - [${currentSong.title}](${currentSong.uri})` : null) +
             `\n\n**Lista**\n${queueString}`
-        )
-            .setFooter({ text: `Requisitado por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() }).setTimestamp()
-            .setThumbnail(currentSong.thumbnail)
+        ).setFooter({
+            text: `Requisitado por ${interaction.user.username}`,
+            iconURL: interaction.user.displayAvatarURL()
+        }).setThumbnail(currentSong.thumbnail)
 
         interaction.editReply({ content: null, embeds: [embed] })
     }
