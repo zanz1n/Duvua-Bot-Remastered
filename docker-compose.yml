@@ -33,7 +33,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${PRE_MONGODB_PASSWORD}
     command: mongod --logpath=/dev/null
     volumes:
-      - mongo_volume:/data/db
+      - /var/mongodb-data/:/data/db
     networks:
       dcbot:
   lavalink:
@@ -44,12 +44,11 @@ services:
     container_name: lavalink
     environment:
       LAVALINK_PASSWORD: ${PRE_LAVALINK_PASSWORD}
+    volumes:
+      - .lavalink/:/server
     networks:
       dcbot:
 
 networks:
   dcbot:
     driver: bridge
-
-volumes:
-  mongo_volume:
