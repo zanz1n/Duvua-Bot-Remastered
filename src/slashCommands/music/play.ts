@@ -80,7 +80,10 @@ module.exports = class extends slashCommand {
             embed.setDescription(`**[${song.title}](${song.uri})** foi adicionada a playlist\n\n**` +
                 `Duração: [${formatData}]**`)
                 .setThumbnail(song.displayThumbnail('default'))
-                .setFooter({ text: `Requisitado por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() })
+                .setFooter({
+                    text: `Requisitado por ${interaction.user.username}`,
+                    iconURL: interaction.user.displayAvatarURL()
+                })
         }
         else if (res.loadType === 'SEARCH_RESULT') {
             player.queue.add(res.tracks[0])
@@ -93,7 +96,10 @@ module.exports = class extends slashCommand {
             embed.setDescription(`**[${song.title}](${song.uri})** foi adicionada a playlist\n\n**` +
                 `Duração: [${formatData}]**`)
                 .setThumbnail(song.displayThumbnail('default'))
-                .setFooter({ text: `Requisitado por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() })
+                .setFooter({
+                    text: `Requisitado por ${interaction.user.username}`,
+                    iconURL: interaction.user.displayAvatarURL()
+                })
         }
 
         const skip = new MessageButton()
