@@ -5,6 +5,8 @@ import { config } from '../../botconfig'
 import { Database } from '../database'
 import { Manager } from 'erela.js'
 
+const sleep = (ms: number) => { return new Promise(resolve => setTimeout(resolve, ms)) }
+
 export class Bot extends Client {
     public db = new Database
     public commands = []
@@ -32,6 +34,11 @@ export class Bot extends Client {
             console.log(
                 this.config.logs.lavalink_err(`Node "${node.options.identifier}" encountered an error: ${error.message}.`)
             )
+        })
+        .on("queueEnd", async (player) => {
+            await sleep(500).then(() => {
+                player.destroy()
+            })
         })
 
     public constructor() {
