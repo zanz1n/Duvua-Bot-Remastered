@@ -36,10 +36,6 @@ module.exports = class extends slashCommand {
             embed.setDescription(`**Vamos manter nossa relação como uma amizade, ok ${interaction.user}?**`)
             return await interaction.editReply({ embeds: [embed] })
         }
-        else if (user.bot) {
-            embed.setDescription(`**Você não pode beijar um bot ${interaction.user}!**`)
-            return await interaction.editReply({ embeds: [embed] })
-        }
 
         else if (user === interaction.user) {
             embed.setTitle(`O amor está no ar!  \:heart:`).setDescription(`${interaction.user} beijou ${user}`)
@@ -48,8 +44,17 @@ module.exports = class extends slashCommand {
         }
         else {
             const dateNow = new Date
-            embed.setTitle(`O amor está no ar!  \:heart:`).setDescription(`${interaction.user} beijou ${user}`).setImage(links[random(0, links.length)])
-                .setFooter({ text: `Requisitado por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() }).setTimestamp()
+            embed.setTitle(`O amor está no ar!  \:heart:`)
+                .setDescription(`${interaction.user} beijou ${user}`)
+                .setImage(links[random(0, links.length)])
+                .setFooter({
+                    text: `Requisitado por ${interaction.user.username}`,
+                    iconURL: interaction.user.displayAvatarURL({
+                        format: 'png',
+                        dynamic: false
+                    })
+                })
+                .setTimestamp()
 
             const repeat = new MessageButton()
                 .setCustomId(`repeat${dateNow}`)

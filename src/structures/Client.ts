@@ -79,7 +79,7 @@ export class Bot extends Client {
                     if (this.config.dev_mode) console.log(config.logs.single_command(cmd.name))
                 }
             }
-        } console.log(`\x1b[33m[bot-api] All slashCommands loaded\x1b[0m`)
+        } console.log(`\x1b[33m[bot-api] All legacyCommands loaded\x1b[0m`)
     }
 
     private loadEvents(path = __dirname + '/../events') {
@@ -92,7 +92,7 @@ export class Bot extends Client {
                 if (this.config.dev_mode) console.log(this.config.logs.single_event(evt.name))
                 this.on(evt.name, evt.run)
             }
-        } console.log(`\x1b[33m[bot-api] All slashCommands loaded\x1b[0m`)
+        } console.log(`\x1b[33m[bot-api] All Events loaded\x1b[0m`)
     }
 
     public parseMsIntoFormatData(n: string | Number) {

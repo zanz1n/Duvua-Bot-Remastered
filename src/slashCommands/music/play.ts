@@ -101,7 +101,7 @@ module.exports = class extends slashCommand {
                     iconURL: interaction.user.displayAvatarURL()
                 })
         }
-
+        console.log(res.loadType)
         const skip = new MessageButton()
             .setCustomId(`skip`)
             .setEmoji(`⏭️`)
