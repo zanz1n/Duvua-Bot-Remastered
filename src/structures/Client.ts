@@ -48,6 +48,7 @@ export class Bot extends Client {
         this.loadSlashCommands()
         this.loadCommands()
         this.loadEvents()
+        this.loadApplicationCommands()
     }
 
     private loadSlashCommands(path = __dirname + '/../slashCommands') {
@@ -93,6 +94,22 @@ export class Bot extends Client {
                 this.on(evt.name, evt.run)
             }
         } console.log(`\x1b[33m[bot-api] All Events loaded\x1b[0m`)
+    }
+
+    private loadApplicationCommands(path = __dirname + '/../applicationCommands') {
+        for (const category of readdirSync(path)) {
+
+            for (const applicationCommand of readdirSync(`${path}/${category}`)) {
+
+                const scmd = new (require(`${path}/${category}/${applicationCommand}`))(this)
+
+                if (scmd.disabled) console.log(config.logs.disabled_slash_command(scmd.name))
+                else {
+                    this.slashCommands.push(scmd)
+                    if (this.config.dev_mode) console.log(config.logs.single_application_command(scmd.name))
+                }
+            }
+        } console.log(`\x1b[33m[bot-api] All applicationCommands loaded\x1b[0m`)
     }
 
     public parseMsIntoFormatData(n: string | Number) {
