@@ -13,7 +13,7 @@ const {
 class Config {
     public token = BOT_TOKEN
     public serverid = SERVER_ID
-    public name = "Oyne Bot"
+    public name = "Duvua Bot"
     public embed_default_color: ColorResolvable = "#0000FF"
     public prefix = "-"
     public dev_mode = false
@@ -59,7 +59,10 @@ class Config {
         },
         lavalink_err(name: String) {
             return `\x1b[31m[lavalink-err] ${name}\x1b[0m`
-        }
+        },
+        single_application_command(name: string) {
+            return `\x1b[35m[bot-applicationCommands] ${name} loaded\x1b[0m`
+        },
     }
 }
 
