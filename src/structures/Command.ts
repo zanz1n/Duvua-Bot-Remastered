@@ -1,11 +1,12 @@
-import { sMessage } from '../types/Message'
 import { Bot } from './Client'
+import { sMessage } from '../types/Message'
 
 export type CommandOptionsType = {
     name: string
     description: string
     disabled: boolean
     aliases?: Array<string>
+    run?: (message: sMessage, args: string) => void
 }
 
 export class Command {
@@ -14,7 +15,6 @@ export class Command {
     name: string
     disabled: boolean
     aliases: Array<string>
-    run: (message: sMessage, args: string) => void
 
     constructor(client: Bot, options: CommandOptionsType) {
         this.client = client
