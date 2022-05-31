@@ -36,14 +36,14 @@ module.exports = class extends slashCommand {
         const embed = new MessageEmbed()
 
         if (!interaction.memberPermissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
-            embed.setDescription(`**Você não tem permissão para usar esse comando,  ${interaction.user.username}.**`)
+            embed.setDescription(`**Você não tem permissão para usar esse comando,  ${interaction.user}.**`)
             return await interaction.editReply({ content: null, embeds: [embed] })
         }
-        const amount = interaction.options.getNumber("quantidade")
+        const amount = parseInt(interaction.options.getNumber("quantidade"))
         const target = interaction.options.getMember("usuario")
 
-        if (amount > 99 || amount < 1) {
-            embed.setDescription(`**A quantidade precisa ser um número inteiro entre 1 e 100,  ${interaction.user.username}.**`)
+        if (!amount || amount > 99 || amount < 1) {
+            embed.setDescription(`**A quantidade precisa ser um número inteiro entre 1 e 99,  ${interaction.user}.**`)
             return await interaction.editReply({ content: null, embeds: [embed] })
         }
         interaction.deleteReply()
@@ -64,15 +64,15 @@ module.exports = class extends slashCommand {
                 embed.setDescription(`**Foram limpadas \`${msgs.size}\` mensagens de ${target} no canal de texto!**`)
                 await interaction.channel.send({ content: null, embeds: [embed] })
             }).catch(async (err: Error) => {
-                embed.setDescription(`**Não foram possível limpar as mesagens, ${interaction.user.username}**`)
+                embed.setDescription(`**Não foram possível limpar as mesagens, ${interaction.user}**`)
                 await interaction.channel.send({ content: null, embeds: [embed] })
             })
         } else {
             await interaction.channel.bulkDelete(amount, true).then(async (msgs: any) => {
-                embed.setDescription(`**Foram limpas ${msgs.size} mensagens no canal de texto!**`)
+                embed.setDescription(`**${interaction.user} limpou ${msgs.size} mensagens no canal de texto!**`)
                 await interaction.channel.send({ content: null, embeds: [embed] })
             }).catch(async (err: Error) => {
-                embed.setDescription(`**Não foram possível limpar as mesagens, ${interaction.user.username}**`)
+                embed.setDescription(`**Não foram possível limpar as mesagens, ${interaction.user}**`)
                 await interaction.channel.send({ content: null, embeds: [embed] })
             })
         }
