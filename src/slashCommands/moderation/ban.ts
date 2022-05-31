@@ -28,14 +28,14 @@ module.exports = class extends slashCommand {
     run = async (interaction: sInteraction) => {
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
         if (!interaction.memberPermissions.has(Permissions.FLAGS.BAN_MEMBERS)) {
-            embed.setDescription(`**Você não tem permissão para usar esse comando,  ${interaction.user.username}**`)
+            embed.setDescription(`**Você não tem permissão para usar esse comando,  ${interaction.user}**`)
             return await interaction.editReply({ embeds: [embed] })
         }
 
         const member = interaction.options.getMember('usuario')
 
         if (member === interaction.member) {
-            embed.setDescription(`**Você não pode banir a si mesmo, ${interaction.user.username}**`)
+            embed.setDescription(`**Você não pode banir a si mesmo, ${interaction.user}**`)
             return await interaction.editReply({ embeds: [embed] })
         }
 
