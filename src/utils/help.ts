@@ -74,7 +74,6 @@ export default {
             .addField("\:globe_with_meridians:\:m: iss", find("iss"), true)
             .addField("\:globe_with_meridians: starwars", find("starwars"), true)
             .addField("\:globe_with_meridians:\:m: slap", find("slap"), true)
-            .addField("*", "*", true).addField("*", "*", true)
     },
     info: (client: Bot, user: any, guilDb: any) => {
         const find = (command: string) => { return client.slashCommands.find((c: slashCommand) => c.name === command).description || "Command not found" }
