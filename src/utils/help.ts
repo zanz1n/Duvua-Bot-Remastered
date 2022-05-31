@@ -68,10 +68,10 @@ export default {
             .addField("\:globe_with_meridians:\:m: kiss", find("kiss"), true)
             .addField("\:globe_with_meridians:\:m: avatar", find("avatar"), true)
             .addField("\:m: bruno", "Não falamos do Bruno", true)
-            .addField("\:globe_with_meridians: meme", find("meme"), true)
+            .addField("\:globe_with_meridians:\:m: meme", find("meme"), true)
             .addField("\:globe_with_meridians: facts year", "Exibe curiosidades sobre um ano", true)
             .addField("\:globe_with_meridians: facts number", "Exibe curiosidades sobre um número", true)
-            .addField("\:globe_with_meridians: iss", find("iss"), true)
+            .addField("\:globe_with_meridians:\:m: iss", find("iss"), true)
             .addField("\:globe_with_meridians: starwars", find("starwars"), true)
     },
     info: (client: Bot, user: any, guilDb: any) => {
