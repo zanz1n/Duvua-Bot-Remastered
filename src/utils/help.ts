@@ -74,6 +74,10 @@ export default {
             .addField("\:globe_with_meridians:\:m: iss", find("iss"), true)
             .addField("\:globe_with_meridians: starwars", find("starwars"), true)
             .addField("\:globe_with_meridians:\:m: slap", find("slap"), true)
+            .addField("\:m: count", "Conta até uma determinada quantidade", true)
+            .addField("*", "*", true)
+            .addField("*", "*", true)
+        //Conta até uma determinada quantidade
     },
     info: (client: Bot, user: any, guilDb: any) => {
         const find = (command: string) => { return client.slashCommands.find((c: slashCommand) => c.name === command).description || "Command not found" }
@@ -94,7 +98,7 @@ export default {
             .addField("🖋️ Utilidade / Moderação", "Comandos para auxiliar na moderação e organização do server.")
             .addField("\:globe_with_meridians: embed", find("embed"), true)
             .addField("\:globe_with_meridians: say", find("say"), true)
-            .addField("\:globe_with_meridians: clear", find("clear"), true)
+            .addField("\:globe_with_meridians:\:m: clear", find("clear"), true)
             .addField("\:globe_with_meridians: ban", find("ban"), true)
             .addField("\:globe_with_meridians: config wellcome", "Altera a mensagem de boas vindas", true)
             .addField("\:globe_with_meridians: config prefix", "Altera o prefixo do bot no servidor", true)
