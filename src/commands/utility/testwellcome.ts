@@ -12,8 +12,8 @@ import Canvacord from 'canvacord'
 module.exports = class extends Command {
     constructor(client: Bot) {
         super(client, {
-            name: "test",
-            description: "tests the bot",
+            name: "testwellcome",
+            description: "Teste o comando de wellcome",
             disabled: false,
             aliases: ['tw'],
         })
@@ -28,7 +28,7 @@ module.exports = class extends Command {
         const { member } = message
 
         let guilDb = await this.client.db.getGuildDbFromMember(message.member)
-        
+
         const channel = member.guild.channels.cache.get(guilDb.wellcome.channel) as TextChannel
 
         if (!channel) return
