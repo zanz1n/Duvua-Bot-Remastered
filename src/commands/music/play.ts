@@ -43,8 +43,6 @@ module.exports = class extends Command {
 
         const res = await player.search(search, message.author)
 
-        if (this.client.config.dev_mode) console.log(res.loadType)
-
         if (res.loadType === 'LOAD_FAILED') {
             if (!player.queue.current) player.destroy()
             embed.setDescription(`**Ocorreu um erro enquanto sua música era carregada, ${message.author}**`)
