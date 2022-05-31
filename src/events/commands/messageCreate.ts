@@ -22,17 +22,23 @@ module.exports = class extends Event {
         const args = message.content.replace(guilDb.prefix + messageCommand, "")
 
         if (message.mentions.users.first() === this.client.user) {
-            const cmd = this.client.commands.find((cm: Command) => cm.name === 'help') as Command
+            const cmd = this.client.commands.find((cm: Command) => cm.name === 'help')
+            if (!cmd) return
             cmd.run(message, args)
         }
         else if (message.content.startsWith(guilDb.prefix)) {
             const cmd = this.client.commands.find(
                 (cm: Command) => cm.aliases.push(cm.name) &&
                     cm.aliases.find((st: string) =>
-                        st === messageCommand) === messageCommand) as Command;
+                        st === messageCommand) === messageCommand);
 
             if (cmd) {
-                cmd.run(message, args)
+                cmd.run(message, args).catch((err: Error) => {
+                    if (err) console.log("\x1b[31m[bot-err] something whent wrong trying to execute a slashCommand\x1b[0m\n",
+                        err,
+                        "\n\x1b[33m[bot-api] this may affect the usability of the bot\x1b[0m"
+                    )
+                })
             }
         } else {
             const memberDb = await this.client.db.getMemberDbFromMember(message.member)
