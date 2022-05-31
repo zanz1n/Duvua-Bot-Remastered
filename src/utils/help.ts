@@ -73,6 +73,8 @@ export default {
             .addField("\:globe_with_meridians: facts number", "Exibe curiosidades sobre um número", true)
             .addField("\:globe_with_meridians:\:m: iss", find("iss"), true)
             .addField("\:globe_with_meridians: starwars", find("starwars"), true)
+            .addField("\:globe_with_meridians:\:m: slap", find("slap"), true)
+            .addField("*", "*", true).addField("*", "*", true)
     },
     info: (client: Bot, user: any, guilDb: any) => {
         const find = (command: string) => { return client.slashCommands.find((c: slashCommand) => c.name === command).description || "Command not found" }
@@ -80,10 +82,10 @@ export default {
         return new MessageEmbed().setColor(client.config.embed_default_color)
             .addField("ℹ️ Info", "Comandos de inforomação em geral.")
             .addField("\:globe_with_meridians:\:m: ping", find("ping"), true)
-            .addField("\:globe_with_meridians: info", find("info"), true)
+            .addField("\:globe_with_meridians:\:m: info", find("info"), true)
             .addField("\:globe_with_meridians:\:m: help", find("help"), true)
             .addField("\:globe_with_meridians:\:m: anime", find("anime"), true)
-            .addField("\:globe_with_meridians: github", find("github"), true)
+            .addField("\:globe_with_meridians:\:m: github", find("github"), true)
             .addField("*", "*", true)
     },
     modUtil: (client: Bot, user: any, guilDb: any) => {
@@ -109,7 +111,7 @@ export default {
             .addField("\:globe_with_meridians: pause", find("pause"), true)
             .addField("\:globe_with_meridians: resume", find("resume"), true)
             .addField("\:globe_with_meridians:\:m: skip", find("skip"), true)
-            .addField("\:globe_with_meridians: songinfo", find("songinfo"), true)
+            .addField("\:globe_with_meridians:\:m: songinfo", find("songinfo"), true)
             .addField("\:globe_with_meridians:\:m: stop", find("stop"), true)
             .addField("\:globe_with_meridians: dj add", "Adiciona um dj no server", true)
             .addField("\:globe_with_meridians: dj remove", "Remove algum dj do server", true)
@@ -121,8 +123,10 @@ export default {
 
         return new MessageEmbed().setColor(client.config.embed_default_color)
             .addField("💸 Dinheiro", "Todos os comandos relacionados ao sistema monetário.")
-            .addField("\:globe_with_meridians: coins", find("coins"), true).addField("\:globe_with_meridians: work", find("work"), true)
-            .addField("\:globe_with_meridians:\:m: level", find("level"), true).addField("\:globe_with_meridians: pay", find("pay"), true)
+            .addField("\:globe_with_meridians: coins", find("coins"), true)
+            .addField("\:globe_with_meridians: work", find("work"), true)
+            .addField("\:globe_with_meridians:\:m: level", find("level"), true)
+            .addField("\:globe_with_meridians: pay", find("pay"), true)
             .addField("*", "*", true).addField("*", "*", true)
     }
 }
