@@ -5,7 +5,8 @@ import { Embed as MessageEmbed } from '../../types/Embed'
 import {
     MessageButton,
     MessageActionRow,
-    GuildMember
+    GuildMember,
+    Permissions
 } from 'discord.js'
 
 module.exports = class extends Command {
@@ -26,7 +27,7 @@ module.exports = class extends Command {
         if (guilDb.strict_music_mode) {
             const memberDb = await this.client.db.getMemberDbFromMember(message.member)
 
-            if (!memberDb.allowed_to_play) {
+            if (!memberDb.allowed_to_play || !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
                 embed.setDescription(`**Você não pode tocar músicas nesse servidor, ${message.member.user}**`)
                 return message.reply({ content: null, embeds: [embed] })
             }

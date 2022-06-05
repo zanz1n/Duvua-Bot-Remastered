@@ -6,6 +6,7 @@ import {
     GuildMember,
     MessageActionRow,
     MessageButton,
+    Permissions
 } from "discord.js"
 
 module.exports = class extends slashCommand {
@@ -34,7 +35,7 @@ module.exports = class extends slashCommand {
         if (guilDb.strict_music_mode) {
             const memberDb = await this.client.db.getMemberDbFromMember(interaction.member)
 
-            if (!memberDb.allowed_to_play) {
+            if (!memberDb.allowed_to_play || !interaction.memberPermissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
                 embed.setDescription(`**Você não pode tocar músicas nesse servidor, ${interaction.user}**`)
                 return interaction.editReply({ content: null, embeds: [embed] })
             }
