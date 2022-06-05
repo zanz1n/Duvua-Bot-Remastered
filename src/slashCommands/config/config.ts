@@ -17,7 +17,7 @@ module.exports = class extends slashCommand {
             options: [
                 {
                     type: 'SUB_COMMAND',
-                    name: 'wellcome',
+                    name: 'welcome',
                     description: "Altera a mensagem de boas vindas do server",
                     options: [
                         {
@@ -69,14 +69,27 @@ module.exports = class extends slashCommand {
                 },
                 {
                     type: 'SUB_COMMAND',
-                    name: 'disablewellcome',
-                    description: "Desabilita a mensagem de bem-vindo no server"
-                },
-                {
-                    type: 'SUB_COMMAND',
-                    name: 'enablewellcome',
-                    description: "Habilita a mensagem de bem-vindo no server"
-                },
+                    name: 'enablewelcome',
+                    description: "Habilita a mensagem de bem-vindo no server",
+                    options: [
+                        {
+                            name: 'enable',
+                            description: "Habilita ou desabilita a mensagem de welcome",
+                            type: 3,
+                            required: true,
+                            choices: [
+                                {
+                                    name: "Habilitado",
+                                    value: "true"
+                                },
+                                {
+                                    name: "Desabilitado",
+                                    value: "false"
+                                }
+                            ]
+                        }
+                    ]
+                }
             ]
         })
     }
@@ -86,18 +99,18 @@ module.exports = class extends slashCommand {
 
         if (!interaction.memberPermissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
             embed.setDescription(`**Você não tem permissão para usar esse comando, ${interaction.user}**`)
-            return await interaction.editReply({ content: null, embeds: [embed] })
+            return interaction.editReply({ content: null, embeds: [embed] })
         }
         const guilDb = await this.client.db.getGuildDbFromMember(interaction.member)
 
         await guilDb.save()
-        if (subCommand === "wellcome") {
+        if (subCommand === "welcome") {
             const type = interaction.options.getString('tipo')
             const channel = interaction.options.getChannel("canal")
 
             if (channel.type !== "GUILD_TEXT") {
                 embed.setDescription(`**Você precisa selecionar um canal de texto válido, ${interaction.user.username}**`)
-                return await interaction.editReply({ content: null, embeds: [embed] })
+                return interaction.editReply({ content: null, embeds: [embed] })
             }
             guilDb.wellcome = {
                 channel: channel.id,
@@ -118,26 +131,32 @@ module.exports = class extends slashCommand {
             embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user.username}**\nAgora o novo prefixo é ${guilDb.prefix}`)
             await interaction.editReply({ content: null, embeds: [embed] })
         }
-        else if (subCommand === "disablewellcome") {
-            guilDb.wellcome.enabled = false
-            guilDb.save()
+        else if (subCommand === "enablewelcome") {
+            const options = interaction.options.getString('enable')
 
-            embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user.username}**\nAs mensagens de bem-vindo foram desabilitadas`)
-            await interaction.editReply({ content: null, embeds: [embed] })
-        }
-        else if (subCommand === "enablewellcome") {
-            guilDb.wellcome.enabled = true
-            if (guilDb.wellcome.channel !== "na") {
-                embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user.username}**
-            Caso deseje mudar a mensagem ou o canal use /config wellcome`)
-            } else {
-                guilDb.wellcome.channel = interaction.channel.id
-                embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user.username}**
-            O canal da mensagem foi definido como esse.
-            Caso deseje mudar use /config wellcome`)
+            if (options === 'true') {
+                guilDb.wellcome.enabled = true
+                if (guilDb.wellcome.channel !== "na") {
+                    embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user.username}**
+                Caso deseje mudar a mensagem ou o canal use /config welcome`)
+                }
+
+                else {
+                    guilDb.wellcome.channel = interaction.channel.id
+                    embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user.username}**
+                O canal da mensagem foi definido como esse.
+                Caso deseje mudar use /config welcome`)
+                }
+
+                guilDb.save()
+                await interaction.editReply({ content: null, embeds: [embed] })
+            } else if (options === 'false') {
+                guilDb.wellcome.enabled = false
+                guilDb.save()
+
+                embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user.username}**\nAs mensagens de bem-vindo foram desabilitadas`)
+                await interaction.editReply({ content: null, embeds: [embed] })
             }
-            guilDb.save()
-            await interaction.editReply({ content: null, embeds: [embed] })
         }
     }
 }
