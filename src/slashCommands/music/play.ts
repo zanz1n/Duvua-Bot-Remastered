@@ -29,6 +29,17 @@ module.exports = class extends slashCommand {
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
         const member = interaction.member as GuildMember
 
+        const guilDb = await this.client.db.getGuildDbFromMember(interaction.member)
+
+        if (guilDb.stric_music_mode) {
+            const memberDb = await this.client.db.getMemberDbFromMember(interaction.member)
+
+            if (!memberDb.allowed_to_play) {
+                embed.setDescription(`**Você não pode tocar músicas nesse servidor, ${interaction.user}**`)
+                return interaction.editReply({ content: null, embeds: [embed] })
+            }
+        }
+
         if (!member.voice.channel) {
             embed.setDescription(`**Você prefisa estart em um canal de voz para tocar uma música, ${interaction.user}**`)
             return interaction.editReply({ content: null, embeds: [embed] })
