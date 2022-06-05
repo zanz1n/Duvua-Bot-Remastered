@@ -76,6 +76,32 @@ module.exports = class extends slashCommand {
                                     ]
                                 }
                             ]
+                        },
+                        {
+                            name: 'add',
+                            description: "Adiciona pessoas que podem tocar musicas no servidor",
+                            type: 1,
+                            options: [
+                                {
+                                    name: 'usuario',
+                                    description: "Usuario que deseja adicionar",
+                                    type: 6,
+                                    required: true
+                                }
+                            ]
+                        },
+                        {
+                            name: 'remove',
+                            description: "Remove pessoas que podem tocar musicas no servidor",
+                            type: 1,
+                            options: [
+                                {
+                                    name: 'usuario',
+                                    description: "Usuario que deseja remover",
+                                    type: 6,
+                                    required: true
+                                }
+                            ]
                         }
                     ]
                 }
@@ -145,6 +171,37 @@ module.exports = class extends slashCommand {
                         guilDb.strict_music_mode = false
                         embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user}**\nStrict mode desabilitado`)
                         await guilDb.save()
+                        return interaction.editReply({ content: null, embeds: [embed] })
+                    }
+                }
+            } else {
+                const member = interaction.options.getMember('usuario') as GuildMember
+                const memberDb = await this.client.db.getMemberDbFromMember(member)
+
+                if (!guilDb.strict_music_mode) {
+                    embed.setDescription(`**O stric mode não está habilitado nesse servidor, todos podem tocar músicas**
+                Para habilitar use /music strict mode`)
+                    return interaction.editReply({ content: null, embeds: [embed] })
+                }
+                if (subCommand === 'add') {
+                    if (memberDb.allowed_to_play) {
+                        embed.setDescription(`**O usuário já possuia permissões para tocar músicas, ${interaction.user}**\nNada mudou.`)
+                        return interaction.editReply({ content: null, embeds: [embed] })
+                    } else if (!memberDb.allowed_to_play) {
+                        memberDb.allowed_to_play = true
+                        await memberDb.save()
+                        embed.setDescription(`**Agora ${member.user} pode tocar músicas nesse servidor, ${interaction.user}**`)
+                        return interaction.editReply({ content: null, embeds: [embed] })
+                    }
+                }
+                else if (subCommand === 'remove') {
+                    if (!memberDb.allowed_to_play) {
+                        embed.setDescription(`**O usuário não possuia permissões para tocar músicas, ${interaction.user}**\nNada mudou.`)
+                        return interaction.editReply({ content: null, embeds: [embed] })
+                    } else if (memberDb.allowed_to_play) {
+                        memberDb.allowed_to_play = false
+                        await memberDb.save()
+                        embed.setDescription(`**Agora ${member.user} não pode mais tocar músicas nesse servidor, ${interaction.user}**`)
                         return interaction.editReply({ content: null, embeds: [embed] })
                     }
                 }
