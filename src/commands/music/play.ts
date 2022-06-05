@@ -23,7 +23,7 @@ module.exports = class extends Command {
 
         const guilDb = await this.client.db.getGuildDbFromMember(message.member)
 
-        if (guilDb.stric_music_mode) {
+        if (guilDb.strict_music_mode) {
             const memberDb = await this.client.db.getMemberDbFromMember(message.member)
 
             if (!memberDb.allowed_to_play) {

@@ -7,7 +7,7 @@ export const Models = {
         name: { type: String },
         prefix: { type: String, default: "-" },
         enable_ticket: { type: Boolean, default: true },
-        stric_music_mode: { type: Boolean, default: false },
+        strict_music_mode: { type: Boolean, default: false },
         wellcome: {
             channel: { type: String, default: "na" },
             message: { type: String, default: "Seja bem vindo ao servidor" },

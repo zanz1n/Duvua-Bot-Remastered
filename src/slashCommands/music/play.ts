@@ -31,7 +31,7 @@ module.exports = class extends slashCommand {
 
         const guilDb = await this.client.db.getGuildDbFromMember(interaction.member)
 
-        if (guilDb.stric_music_mode) {
+        if (guilDb.strict_music_mode) {
             const memberDb = await this.client.db.getMemberDbFromMember(interaction.member)
 
             if (!memberDb.allowed_to_play) {
