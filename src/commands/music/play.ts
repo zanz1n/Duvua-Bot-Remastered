@@ -21,6 +21,17 @@ module.exports = class extends Command {
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
         const member = message.member as GuildMember
 
+        const guilDb = await this.client.db.getGuildDbFromMember(message.member)
+
+        if (guilDb.stric_music_mode) {
+            const memberDb = await this.client.db.getMemberDbFromMember(message.member)
+
+            if (!memberDb.allowed_to_play) {
+                embed.setDescription(`**Você não pode tocar músicas nesse servidor, ${message.member.user}**`)
+                return message.reply({ content: null, embeds: [embed] })
+            }
+        }
+
         if (!member.voice.channel) {
             embed.setDescription(`**Você prefisa estart em um canal de voz para tocar uma música, ${message.author}**`)
             return message.reply({ content: null, embeds: [embed] })
