@@ -20,6 +20,7 @@ export interface sInteraction extends Interaction {
         getChannel(name: string)
         getNumber(name: string)
         getSubcommand: () => string
+        getSubcommandGroup: () => string
         getUser(name: string)
     }
 }
