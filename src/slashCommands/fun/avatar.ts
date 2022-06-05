@@ -15,7 +15,7 @@ module.exports = class extends slashCommand {
                     name: "usuario",
                     description: "De quem você deseja exibir o avatar",
                     type: 6,
-                    required: true
+                    required: false
                 }
             ]
         })
