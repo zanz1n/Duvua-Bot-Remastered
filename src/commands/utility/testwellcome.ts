@@ -13,7 +13,7 @@ module.exports = class extends Command {
     constructor(client: Bot) {
         super(client, {
             name: "testwellcome",
-            description: "Teste o comando de wellcome",
+            description: "Testa o comando de wellcome",
             disabled: false,
             aliases: ['tw'],
         })
