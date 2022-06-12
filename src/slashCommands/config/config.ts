@@ -70,10 +70,10 @@ module.exports = class extends slashCommand {
                 {
                     type: 'SUB_COMMAND',
                     name: 'enablewelcome',
-                    description: "Habilita a mensagem de bem-vindo no server",
+                    description: "Habilita ou desabilita a mensagem de bem-vindo no server",
                     options: [
                         {
-                            name: 'enable',
+                            name: 'enabled',
                             description: "Habilita ou desabilita a mensagem de welcome",
                             type: 3,
                             required: true,
