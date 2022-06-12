@@ -2,7 +2,7 @@
 
 <h2>[en-US]</h2>
 <h1> duvua-bot </h1>
-<p>Duvua is and discord bot that can do all that your server need and supports simple commands whith prefix -, and slash commands.</p>
+<p>Duvua is a discord bot that can do all that your server need and supports simple commands whith prefix -, and slash commands.</p>
 <p>You can add it to your server on: </p>
 <p><strong>This code can be downloaded and modifyed, but not used for commercial stuff. For more detailed information read the license.</strong></p>
 <h2>[pt-BR]</h2>
