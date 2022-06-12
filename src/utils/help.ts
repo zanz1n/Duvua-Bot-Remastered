@@ -102,7 +102,10 @@ export default {
             .addField("\:globe_with_meridians: ban", find("ban"), true)
             .addField("\:globe_with_meridians: config wellcome", "Altera a mensagem de boas vindas", true)
             .addField("\:globe_with_meridians: config prefix", "Altera o prefixo do bot no servidor", true)
-        //.addField("\:information_source: Dica", "**Nos comandos say e embed, use /n para quebrar linha.**")
+            .addField("\:m: testwellcome", "Testa o comando de wellcome", true)
+            .addField("\:globe_with_meridians: config enablewelcome", "Habilita ou desabilita a mensagem de welcome", true)
+            .addField("*", "*", true)
+            .addField("\:information_source: Dica", "**Nos comandos say e embed, use \\n para quebrar linha.**")
     },
     music: (client: Bot, user: any, guilDb: any) => {
         const find = (command: string) => { return client.slashCommands.find((c: slashCommand) => c.name === command).description || "Command not found" }
@@ -116,10 +119,14 @@ export default {
             .addField("\:globe_with_meridians:\:m: skip", find("skip"), true)
             .addField("\:globe_with_meridians:\:m: songinfo", find("songinfo"), true)
             .addField("\:globe_with_meridians:\:m: stop", find("stop"), true)
-            .addField("\:globe_with_meridians: dj add", "Adiciona um dj no server", true)
-            .addField("\:globe_with_meridians: dj remove", "Remove algum dj do server", true)
+            .addField("\:globe_with_meridians: music dj add", "Adiciona um dj no server", true)
+            .addField("\:globe_with_meridians: music dj remove", "Remove algum dj do server", true)
+            .addField("\:globe_with_meridians: music strict mode", "Habilita ou desabilita o music strict mode", true)
+            .addField("\:globe_with_meridians: music strict add", "Adiciona pessoas que podem tocar musicas no servidor", true)
+            .addField("\:globe_with_meridians: music strict remove", "Remove pessoas que podem tocar musicas no servidor", true)
 
-            .addField("\:information_source: Dica", "**Dj podem controlar playlists e músicas sem que precisem de permissões adminitrativas no server.**")
+            .addField("\:information_source: Dica", "**Quando o strict mode está ligado, apenas pessoas autorizadas podem tocar músicas**" +
+                "**DJs podem controlar playlists e músicas sem que precisem de permissões adminitrativas no server.**\n")
     },
     money: (client: Bot, user: any, guilDb: any) => {
         const find = (command: string) => { return client.slashCommands.find((c: slashCommand) => c.name === command).description || "Command not found" }
