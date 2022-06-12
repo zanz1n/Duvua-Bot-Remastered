@@ -1,9 +1,9 @@
-import { Client, Intents } from 'discord.js'
+import { Client } from 'discord.js'
 import { readdirSync } from 'fs'
 import { Command } from './Command'
 import { config } from '../../botconfig'
 import { Database } from '../database'
-import { Manager } from 'erela.js'
+import { LavalinkManager } from './ClientExtensions/Manager'
 
 const sleep = (ms: number) => { return new Promise(resolve => setTimeout(resolve, ms)) }
 
@@ -13,33 +13,7 @@ export class Bot extends Client {
     public slashCommands = []
     public config = config
 
-    public manager = new Manager({
-        nodes: [{
-            host: this.config.lavalink_host,
-            password: this.config.lavalink_password,
-            retryDelay: 5000,
-        }],
-        autoPlay: true,
-        send: (id, payload) => {
-            const guild = this.guilds.cache.get(id);
-            if (guild) guild.shard.send(payload);
-        }
-    })
-        .on("nodeConnect", (node) => {
-            console.log(
-                this.config.logs.lavalink_logs(`Node "${node.options.identifier}" connected`)
-            )
-        })
-        .on("nodeError", (node, error) => {
-            console.log(
-                this.config.logs.lavalink_err(`Node "${node.options.identifier}" encountered an error: ${error.message}.`)
-            )
-        })
-        .on("queueEnd", async (player) => {
-            await sleep(500).then(() => {
-                player.destroy()
-            })
-        })
+    public manager = new LavalinkManager(this)
 
     public constructor() {
         super(config.client_init_options)
