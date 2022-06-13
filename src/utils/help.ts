@@ -75,7 +75,7 @@ export default {
             .addField("\:globe_with_meridians: starwars", find("starwars"), true)
             .addField("\:globe_with_meridians:\:m: slap", find("slap"), true)
             .addField("\:m: count", "Conta até uma determinada quantidade", true)
-            .addField("*", "*", true)
+            .addField("\:globe_with_meridians: pedro", find('pedro'), true)
             .addField("*", "*", true)
         //Conta até uma determinada quantidade
     },
