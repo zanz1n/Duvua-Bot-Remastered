@@ -38,8 +38,8 @@ module.exports = class extends Command {
             return message.reply({ content: null, embeds: [embed] })
         }
 
-        if (args.length > 80) {
-            embed.setDescription(`**Não pesquiso nada com mais de 80 caracteres, ${message.author}**`)
+        if (args.length > 150 || args.length <= 1) {
+            embed.setDescription(`**Insira uma URL válida, ${message.author}**`)
             return message.reply({ content: null, embeds: [embed] })
         }
 

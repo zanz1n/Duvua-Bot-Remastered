@@ -46,8 +46,8 @@ module.exports = class extends slashCommand {
             return interaction.editReply({ content: null, embeds: [embed] })
         }
 
-        if (interaction.options.getString("som").length > 80) {
-            embed.setDescription(`**Não pesquiso nada com mais de 80 caracteres, ${interaction.user}**`)
+        if (interaction.options.getString("som").length > 150) {
+            embed.setDescription(`**Não pesquiso nada com mais de 150 caracteres, ${interaction.user}**`)
             return interaction.editReply({ content: null, embeds: [embed] })
         }
 
