@@ -15,14 +15,19 @@ export class Bot extends Client {
 
     public manager = new LavalinkManager(this)
 
-    public constructor() {
-        super(config.client_init_options)
-
-        this.login(this.config.token)
+    public start() {
+        this.login(this.config.token).catch((err) => {
+            console.log(err)
+            process.exit(1)
+        })
         this.loadSlashCommands()
         this.loadCommands()
         this.loadEvents()
         this.loadApplicationCommands()
+    }
+
+    public constructor() {
+        super(config.client_init_options)
     }
 
     private loadSlashCommands(path = __dirname + '/../slashCommands') {
