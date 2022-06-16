@@ -63,14 +63,15 @@ module.exports = class extends Event {
                 } else embed.setDescription(`**Parabéns ${message.author}, você avançou para o level ${memberDb.level}**\n` +
                 "Essa mensagem será deletada em 10 segundos.")
                 const msg = await message.channel.send({ embeds: [embed] })
+
+                await memberDb.save()
+
                 await sleep(10000).then(() => {
                     msg.delete().catch((err) => {
                         console.log(err)
                     })
                 })
             }
-
-            await memberDb.save()
         }
         if (guilDb.name !== message.guild.name) {
             guilDb.name = message.guild.name
