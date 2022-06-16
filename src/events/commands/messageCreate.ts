@@ -4,6 +4,8 @@ import { Command } from '../../structures/Command'
 import { sMessage } from '../../types/Message'
 import { Embed as MessageEmbed } from '../../types/Embed'
 
+const sleep = (ms: number) => { return new Promise(resolve => setTimeout(resolve, ms)) }
+
 module.exports = class extends Event {
     constructor(client: Bot) {
         super(client, {
@@ -56,10 +58,16 @@ module.exports = class extends Event {
 
                 if (memberDb.level === 2) {
                     embed.setDescription(`**Parabéns ${message.author}, você avançou para o level ${memberDb.level}**
-                    Para conquistar mais níveis, coninue interagindo nesse serivdor.`
+                    Essa mensagem será deletada em 10 segundos.`
                     )
-                } else embed.setDescription(`**Parabéns ${message.author}, você avançou para o level ${memberDb.level}**`)
-                message.channel.send({ embeds: [embed] })
+                } else embed.setDescription(`**Parabéns ${message.author}, você avançou para o level ${memberDb.level}**\n` +
+                "Essa mensagem será deletada em 10 segundos.")
+                const msg = await message.channel.send({ embeds: [embed] })
+                await sleep(10000).then(() => {
+                    msg.delete().catch((err) => {
+                        console.log(err)
+                    })
+                })
             }
 
             await memberDb.save()
