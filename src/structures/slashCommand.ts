@@ -1,24 +1,23 @@
 import { Bot } from './Client'
-import { sInteraction } from '../types/Interaction'
+import {
+    ChatInputApplicationCommandData,
+    ApplicationCommandOptionData
+} from 'discord.js'
 
-export type slashCommandOptionsType = {
-    name: string
-    description: string
-    options?: Array<Object>
+export type slashCommandType = {
     ephemeral: boolean
     disabled: boolean
-    run?: (interaction: sInteraction) => void
-}
 
-export class slashCommand {
+} & ChatInputApplicationCommandData
+
+export abstract class slashCommand {
     client: Bot
     name: string
     description: string
-    options: Array<Object>
+    options: ApplicationCommandOptionData[]
     ephemeral: boolean
     disabled: boolean
-
-    constructor(client: Bot, options: slashCommandOptionsType) {
+    constructor(client: Bot, options: slashCommandType) {
         this.client = client
         this.name = options.name
         this.description = options.description
