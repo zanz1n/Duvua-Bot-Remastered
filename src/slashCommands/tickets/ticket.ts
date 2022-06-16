@@ -48,7 +48,7 @@ module.exports = class extends slashCommand {
         if (!guilDb.enable_ticket) {
             const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
                 .setDescription(`**O uso de tickets não é permitido nesse servidor, ${interaction.user}**`)
-            return await interaction.editReply({ content: null, embeds: [embed] })
+            return interaction.editReply({ content: null, embeds: [embed] })
         }
         const dateNow = new Date
         const subCommand = interaction.options.getSubcommand()
@@ -60,14 +60,14 @@ module.exports = class extends slashCommand {
 
             if (channel.type !== "GUILD_TEXT") {
                 confEmbed.setDescription(`**Você precisa selecionar um canal de texto válido, ${interaction.user}**`)
-                return await interaction.editReply({ content: null, embeds: [confEmbed] })
+                return interaction.editReply({ content: null, embeds: [confEmbed] })
             }
 
             const interactiondb = await this.client.db.findTicketDbFromMember(interaction.member)
 
             if (interactiondb) {
                 confEmbed.setDescription(`**Você já tem um ticket criado, ${interaction.user}**`)
-                return await interaction.editReply({ embeds: [confEmbed] })
+                return interaction.editReply({ embeds: [confEmbed] })
             }
 
             confEmbed.setDescription(`**Você deseja realmente abrir o ticket, ${interaction.user}**`)
@@ -234,7 +234,7 @@ module.exports = class extends slashCommand {
                         ticketNo.setDisabled(true)
                         interaction.editReply({ components: [button] })
                         confEmbed.setDescription(`**Seu ticket foi cancelado, ${interaction.user}**`)
-                        return await i.reply({ content: null, embeds: [confEmbed] })
+                        return i.reply({ content: null, embeds: [confEmbed] })
                     }
                 }
             })
@@ -247,7 +247,7 @@ module.exports = class extends slashCommand {
                 if (channel) {
                     await this.client.db.models.Ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).then(async () => {
                         embed.setDescription(`**Seu ticket foi deletado com sucesso, ${interaction.user}**`)
-                        return await interaction.editReply({ embeds: [embed] })
+                        return interaction.editReply({ embeds: [embed] })
                     }).catch(async (err: Error) => {
                         console.log(err)
                     })
@@ -258,7 +258,7 @@ module.exports = class extends slashCommand {
                 } else {
                     await this.client.db.models.Ticket.findByIdAndDelete(interaction.guild.id + interaction.user.id).then(async () => {
                         embed.setDescription(`**O ticket já foi deletado por um moderador, ${interaction.user}**`)
-                        return await interaction.editReply({ embeds: [embed] })
+                        return interaction.editReply({ embeds: [embed] })
                     }).catch(async (err: Error) => {
                         console.log(err)
                     })
@@ -266,7 +266,7 @@ module.exports = class extends slashCommand {
 
             } else {
                 embed.setDescription(`**Você não tem nenhum ticket criado, ${interaction.user}**`)
-                return await interaction.editReply({ embeds: [embed] })
+                return interaction.editReply({ embeds: [embed] })
             }
         }
     }
