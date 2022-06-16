@@ -12,12 +12,13 @@ import Canvacord from 'canvacord'
 module.exports = class extends Command {
     constructor(client: Bot) {
         super(client, {
-            name: "testwellcome",
+            name: "testwelcome",
             description: "Testa o comando de wellcome",
             disabled: false,
             aliases: ['tw'],
         })
     }
+
     run = async (message: sMessage) => {
         const embed = new MessageEmbed()
 
