@@ -1,6 +1,5 @@
 import { Event } from '../../structures/Event'
 import { Bot } from '../../structures/Client'
-import { sInteraction } from '../../types/Interaction'
 import { slashCommand } from "../../structures/slashCommand"
 import { Interaction } from 'discord.js'
 
