@@ -109,7 +109,7 @@ module.exports = class extends slashCommand {
             const channel = interaction.options.getChannel("canal")
 
             if (channel.type !== "GUILD_TEXT") {
-                embed.setDescription(`**Você precisa selecionar um canal de texto válido, ${interaction.user.username}**`)
+                embed.setDescription(`**Você precisa selecionar um canal de texto válido, ${interaction.user}**`)
                 return interaction.editReply({ content: null, embeds: [embed] })
             }
             guilDb.wellcome = {
@@ -119,7 +119,7 @@ module.exports = class extends slashCommand {
                 type
             }
             await guilDb.save()
-            embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user.username}**`)
+            embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user}**`)
             await interaction.editReply({ content: null, embeds: [embed] })
         }
         else if (subCommand === "prefix") {
@@ -128,7 +128,7 @@ module.exports = class extends slashCommand {
             guilDb.prefix = prefix
             guilDb.save()
 
-            embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user.username}**\nAgora o novo prefixo é ${guilDb.prefix}`)
+            embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user}**\nAgora o novo prefixo é ${guilDb.prefix}`)
             await interaction.editReply({ content: null, embeds: [embed] })
         }
         else if (subCommand === "enablewelcome") {
@@ -137,13 +137,13 @@ module.exports = class extends slashCommand {
             if (options === 'true') {
                 guilDb.wellcome.enabled = true
                 if (guilDb.wellcome.channel !== "na") {
-                    embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user.username}**
+                    embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user}**
                 Caso deseje mudar a mensagem ou o canal use /config welcome`)
                 }
 
                 else {
                     guilDb.wellcome.channel = interaction.channel.id
-                    embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user.username}**
+                    embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user}**
                 O canal da mensagem foi definido como esse.
                 Caso deseje mudar use /config welcome`)
                 }
@@ -154,7 +154,7 @@ module.exports = class extends slashCommand {
                 guilDb.wellcome.enabled = false
                 guilDb.save()
 
-                embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user.username}**\nAs mensagens de bem-vindo foram desabilitadas`)
+                embed.setDescription(`**Configurações salvas com sucesso, ${interaction.user}**\nAs mensagens de bem-vindo foram desabilitadas`)
                 await interaction.editReply({ content: null, embeds: [embed] })
             }
         }
