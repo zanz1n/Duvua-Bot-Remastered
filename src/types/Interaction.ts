@@ -4,10 +4,15 @@ import {
     Interaction,
     InteractionReplyOptions,
     InteractionDeferReplyOptions,
-    InteractionDeferUpdateOptions
+    InteractionDeferUpdateOptions,
+    CommandInteraction
 } from 'discord.js'
 
-export interface sInteraction extends Interaction {
+export interface sInteraction extends CommandInteraction {
+    defered: true
+}
+
+/*interface oldsInteraction extends CommandInteraction {
     reply: (options: InteractionReplyOptions) => void
     deferReply: (options: InteractionDeferReplyOptions) => void
     deferUpdate: (options: InteractionDeferUpdateOptions) => void
@@ -23,4 +28,4 @@ export interface sInteraction extends Interaction {
         getSubcommandGroup: () => string
         getUser(name: string)
     }
-}
+}*/
