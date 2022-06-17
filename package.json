@@ -13,7 +13,6 @@
     "ndmprod": "nodemon dist/src/index.js"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.7.0",
     "@iamtraction/google-translate": "^1.1.2",
     "canvacord": "^5.2.3",
     "canvas": "^2.9.1",
