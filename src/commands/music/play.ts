@@ -44,6 +44,7 @@ module.exports = class extends Command {
         }
 
         const player = this.client.manager.create({
+            volume: 50,
             guild: message.guild.id,
             voiceChannel: member.voice.channel.id,
             textChannel: message.channel.id,

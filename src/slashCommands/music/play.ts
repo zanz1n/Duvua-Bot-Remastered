@@ -52,6 +52,7 @@ module.exports = class extends slashCommand {
         }
 
         const player = this.client.manager.create({
+            volume: 50,
             guild: interaction.guild.id,
             voiceChannel: member.voice.channel.id,
             textChannel: interaction.channel.id,
