@@ -14,7 +14,7 @@ class Config {
     public token = BOT_TOKEN
     public serverid = SERVER_ID
     public name = "Duvua Bot"
-    public embed_default_color: ColorResolvable = "#0000FF"
+    public embed_default_color: ColorResolvable = "#ff21f4"
     public prefix = "-"
     public dev_mode = false
     public mongodb_url = MONGODB_URL
