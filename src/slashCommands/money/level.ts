@@ -3,6 +3,7 @@ import { sInteraction } from '../../types/Interaction'
 import { Bot } from '../../structures/Client'
 import { Embed as MessageEmbed } from '../../types/Embed'
 import Canvacord from 'canvacord'
+import { GuildMember } from "discord.js";
 
 module.exports = class extends slashCommand {
     constructor(client: Bot) {
@@ -24,6 +25,7 @@ module.exports = class extends slashCommand {
     run = async (interaction: sInteraction) => {
         const user = interaction.options.getUser('usuario') || interaction.user
         const member = interaction.options.getMember('usuario') || interaction.member
+        if ((!(member instanceof GuildMember) || member.partial)) return
 
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
         if (user.bot) {

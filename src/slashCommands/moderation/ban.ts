@@ -3,6 +3,7 @@ import { sInteraction } from '../../types/Interaction'
 import { Bot } from '../../structures/Client'
 import { Embed as MessageEmbed } from '../../types/Embed'
 import {
+    GuildMember,
     MessageActionRow,
     MessageButton,
     Permissions
@@ -33,6 +34,8 @@ module.exports = class extends slashCommand {
         }
 
         const member = interaction.options.getMember('usuario')
+
+        if ((!(member instanceof GuildMember) || member.partial)) return
 
         if (member === interaction.member) {
             embed.setDescription(`**Você não pode banir a si mesmo, ${interaction.user}**`)
@@ -68,12 +71,12 @@ module.exports = class extends slashCommand {
                 await interaction.editReply({ components: [button] })
 
                 collectorEmbed.setDescription(`**${member} foi banido com sucesso por ${i.user}**`)
-                member.ban().then(() => {
-                    i.reply({ content: null, embeds: [collectorEmbed] })
-                }).catch(err => {
-                    collectorEmbed.setDescription(`**Eu não tenho permissões para banir ${member}**`)
-                    i.reply({ content: null, embeds: [collectorEmbed] })
-                })
+                    member.ban().then(() => {
+                        i.reply({ content: null, embeds: [collectorEmbed] })
+                    }).catch(err => {
+                        collectorEmbed.setDescription(`**Eu não tenho permissões para banir ${member}**`)
+                        i.reply({ content: null, embeds: [collectorEmbed] })
+                    })
             }
             else if (i.customId === "no") {
                 yes.setDisabled(true)

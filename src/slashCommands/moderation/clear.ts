@@ -5,7 +5,7 @@ import { Embed as MessageEmbed } from '../../types/Embed'
 import {
     Permissions,
     Message,
-    TextChannel
+    TextChannel, GuildMember
 } from 'discord.js'
 
 module.exports = class extends slashCommand {
@@ -19,7 +19,7 @@ module.exports = class extends slashCommand {
                 {
                     name: "quantidade",
                     description: "A quantidade de mensagens que deseja excluir",
-                    type: 10,
+                    type: 'INTEGER',
                     required: false
                 },
                 {
@@ -31,6 +31,7 @@ module.exports = class extends slashCommand {
             ]
         })
     }
+
     run = async (interaction: sInteraction) => {
         if (interaction.channel.type === "DM") return;
         const embed = new MessageEmbed()
@@ -39,7 +40,7 @@ module.exports = class extends slashCommand {
             embed.setDescription(`**Você não tem permissão para usar esse comando,  ${interaction.user}.**`)
             return await interaction.editReply({ content: null, embeds: [embed] })
         }
-        const amount = parseInt(interaction.options.getNumber("quantidade"))
+        const amount = interaction.options.getInteger("quantidade")
         const target = interaction.options.getMember("usuario")
 
         if (!amount || amount > 99 || amount < 1) {
@@ -51,6 +52,8 @@ module.exports = class extends slashCommand {
         const messages = await msgChannel.fetch() as any
 
         if (target) {
+            if ((!(target instanceof GuildMember) || target.partial)) return
+
             let i = 0
             const filter = [];
             (await messages).filter((m: Message) => {

@@ -91,7 +91,7 @@ module.exports = class extends slashCommand {
             }
             const collector = interaction.channel.createMessageComponentCollector({ filter, max: 1, time: 20000 })
 
-            collector.on("collect", async (i: sInteraction) => {
+            collector.on("collect", async (i) => {
                 if (i.isButton) {
                     if (i.customId === `ticketYes${dateNow}`) {
                         ticketYes.setDisabled(true)

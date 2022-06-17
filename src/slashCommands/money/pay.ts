@@ -5,7 +5,7 @@ import { Embed as MessageEmbed } from '../../types/Embed'
 import {
     MessageButton,
     MessageActionRow,
-    MessageComponentInteraction
+    MessageComponentInteraction, GuildMember
 } from 'discord.js'
 
 module.exports = class extends slashCommand {
@@ -29,7 +29,7 @@ module.exports = class extends slashCommand {
                     {
                         name: "quantidade",
                         description: "Quantidade de moedas que irá pagar",
-                        type: 3,
+                        type: 'INTEGER',
                         required: true
                     }
                 ]
@@ -48,7 +48,7 @@ module.exports = class extends slashCommand {
                     {
                         name: "quantidade",
                         description: "Quantidade de moedas que irá pagar",
-                        type: 3,
+                        type: 'INTEGER',
                         required: true
                     }
                 ]
@@ -64,6 +64,7 @@ module.exports = class extends slashCommand {
         const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
 
         const member = interaction.options.getMember('usuario')
+        if ((!(member instanceof GuildMember) || member.partial)) return
 
         const { user } = member
         if (user.id === this.client.user.id) {
@@ -136,7 +137,7 @@ module.exports = class extends slashCommand {
                 await interaction.editReply({ content: null, embeds: [embed], components: [transferComp] })
             }
         }
-        collector.on("collect", async (i: sInteraction) => {
+        collector.on("collect", async (i) => {
             const iembed = new MessageEmbed().setColor(this.client.config.embed_default_color)
             if (i.customId === `confirmTransfer${dateNow}`) {
                 confirmTransfer.setDisabled(true)
