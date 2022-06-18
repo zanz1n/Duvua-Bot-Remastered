@@ -15,25 +15,26 @@ module.exports = class extends slashCommand {
             description: "Paga uma quantidade de dinheiro a um usuário",
             disabled: false,
             ephemeral: false,
-            options: [{
-                type: 'SUB_COMMAND',
-                name: 'pratas',
-                description: "Paga uma quantidade de moedas de prata para um alguém",
-                options: [
-                    {
-                        name: "usuario",
-                        description: "Para quem você deseja pagar",
-                        type: 6,
-                        required: true
-                    },
-                    {
-                        name: "quantidade",
-                        description: "Quantidade de moedas que irá pagar",
-                        type: 'INTEGER',
-                        required: true
-                    }
-                ]
-            },
+            options: [
+                {
+                    type: 'SUB_COMMAND',
+                    name: 'pratas',
+                    description: "Paga uma quantidade de moedas de prata para um alguém",
+                    options: [
+                        {
+                            name: "usuario",
+                            description: "Para quem você deseja pagar",
+                            type: 6,
+                            required: true
+                        },
+                        {
+                            name: "quantidade",
+                            description: "Quantidade de moedas que irá pagar",
+                            type: 'INTEGER',
+                            required: true
+                        }
+                    ]
+                },
                 {
                     type: 'SUB_COMMAND',
                     name: 'ouro',
@@ -52,7 +53,8 @@ module.exports = class extends slashCommand {
                             required: true
                         }
                     ]
-                }]
+                }
+            ]
         })
     }
 
