@@ -34,27 +34,28 @@ module.exports = class extends slashCommand {
                     }
                 ]
             },
-            {
-                type: 'SUB_COMMAND',
-                name: 'ouro',
-                description: "Paga uma quantidade de moedas de ouro para um alguém",
-                options: [
-                    {
-                        name: "usuario",
-                        description: "Para quem você deseja pagar",
-                        type: 6,
-                        required: true
-                    },
-                    {
-                        name: "quantidade",
-                        description: "Quantidade de moedas que irá pagar",
-                        type: 'INTEGER',
-                        required: true
-                    }
-                ]
-            }]
+                {
+                    type: 'SUB_COMMAND',
+                    name: 'ouro',
+                    description: "Paga uma quantidade de moedas de ouro para um alguém",
+                    options: [
+                        {
+                            name: "usuario",
+                            description: "Para quem você deseja pagar",
+                            type: 6,
+                            required: true
+                        },
+                        {
+                            name: "quantidade",
+                            description: "Quantidade de moedas que irá pagar",
+                            type: 'INTEGER',
+                            required: true
+                        }
+                    ]
+                }]
         })
     }
+
     run = async (interaction: sInteraction) => {
         const dateNow = Date.now
         const subCommand = await interaction.options.getSubcommand()
@@ -67,22 +68,22 @@ module.exports = class extends slashCommand {
         if ((!(member instanceof GuildMember) || member.partial)) return
 
         const { user } = member
+
         if (user.id === this.client.user.id) {
             embed.setDescription(`**Na próxima eu roubo seu rico dinheirinho, ${interaction.user}**`)
-            return await interaction.editReply({ content: null, embeds: [embed] })
-        }
-        else if (user.bot) {
+            return interaction.editReply({ content: null, embeds: [embed] })
+        } else if (user.bot) {
             embed.setDescription(`**O usuario ${user} é um bot, ${interaction.user}**`)
-            return await interaction.editReply({ content: null, embeds: [embed] })
+            return interaction.editReply({ content: null, embeds: [embed] })
         } else if (user.id === interaction.user.id) {
             embed.setDescription(`**Julgamos a sua tentativa de auto pagamento sus, ${interaction.user}**`)
-            return await interaction.editReply({ content: null, embeds: [embed] })
+            return interaction.editReply({ content: null, embeds: [embed] })
         }
 
         const amount = Number(interaction.options.getString('quantidade'))
         if (!amount) {
             embed.setDescription(`**Você precisa inserir um valor valido, ${interaction.user}**`)
-            return await interaction.editReply({ content: null, embeds: [embed] })
+            return interaction.editReply({ content: null, embeds: [embed] })
         }
 
         const confirmTransfer = new MessageButton()
@@ -164,8 +165,7 @@ module.exports = class extends slashCommand {
                 iembed.setDescription(`**Pagamento realizado com sucesso, ${i.user}**`)
 
                 await i.reply({ embeds: [iembed] })
-            }
-            else if (i.customId === `denyTransfer${dateNow}`) {
+            } else if (i.customId === `denyTransfer${dateNow}`) {
                 confirmTransfer.setDisabled(true)
                 denyTransfer.setDisabled(true)
                 interaction.editReply({ components: [transferComp] })
