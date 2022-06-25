@@ -35,7 +35,7 @@ module.exports = class extends slashCommand {
 
         const member = interaction.options.getMember('usuario')
 
-        if ((!(member instanceof GuildMember) || member.partial)) return
+        if (!(member instanceof GuildMember) || member.partial) return
 
         if (member === interaction.member) {
             embed.setDescription(`**Você não pode banir a si mesmo, ${interaction.user}**`)
