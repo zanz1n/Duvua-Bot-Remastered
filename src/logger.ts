@@ -31,7 +31,7 @@ export const colors = new (class {
         return `\x1b[46m${string}\x1b[0m`
     }
     public white = (string: String) => {
-        return `\x1b[47m${string}\x1b[0m`
+        return `\x1b[47m\x1b[30m${string}\x1b[0m`
     }
 })
 

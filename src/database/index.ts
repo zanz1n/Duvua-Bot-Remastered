@@ -2,6 +2,7 @@ import { config } from "../../botconfig"
 import { connect } from "mongoose"
 import { GuildMember } from "discord.js"
 import { Models } from "./Models"
+import { logger } from "../logger"
 
 class methodTypes {
     //type the methods
@@ -17,10 +18,10 @@ export class Database {
             keepAlive: true
         }, (err) => {
             if (err) {
-                console.log(config.logs.bot_error("Failed to connect to MongoDB\n"), `${err.name}\n`, err.message)
+                logger.log("error", "Failed to connect to MongoDB  " + `${err.name}  ` + err.message)
                 process.exit(1)
             } else {
-                console.log(config.logs.bot("Connected to MongoDB"))
+                logger.log("log", "Connected to MongoDB")
             }
         })
     }
