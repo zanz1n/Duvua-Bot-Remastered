@@ -4,6 +4,8 @@ import { Command } from './Command'
 import { config } from '../../botconfig'
 import { Database } from '../database'
 import { LavalinkManager } from './ClientExtensions/Manager'
+import { logger } from '../logger'
+import { slashCommand } from './slashCommand'
 
 const sleep = (ms: number) => { return new Promise(resolve => setTimeout(resolve, ms)) }
 
@@ -17,7 +19,7 @@ export class Bot extends Client {
 
     public start() {
         this.login(this.config.token).catch((err) => {
-            console.log(err)
+            logger.log("error", err)
             process.exit(1)
         })
         this.loadSlashCommands()
@@ -35,15 +37,15 @@ export class Bot extends Client {
 
             for (const slashCommand of readdirSync(`${path}/${category}`)) {
 
-                const scmd = new (require(`${path}/${category}/${slashCommand}`))(this)
+                const scmd: slashCommand =
+                    new (require(`${path}/${category}/${slashCommand}`))(this)
 
-                if (scmd.disabled) console.log(config.logs.disabled_slash_command(scmd.name))
-                else {
-                    this.slashCommands.push(scmd)
-                    if (this.config.dev_mode) console.log(config.logs.single_slash_command(scmd.name))
-                }
+                if (scmd.disabled) return logger.log("warn", `slashCommand ${scmd.name} disabled`)
+
+                this.slashCommands.push(scmd)
+                logger.log("debug", `slashCommand ${scmd.name} loaded`)
             }
-        } console.log(`\x1b[33m[bot-api] All slashCommands loaded\x1b[0m`)
+        } logger.log("info", `all slashCommands loaded`)
     }
 
     private loadCommands(path = __dirname + '/../commands') {
@@ -51,15 +53,15 @@ export class Bot extends Client {
 
             for (const command of readdirSync(`${path}/${category}`)) {
 
-                const cmd: Command = new (require(`${path}/${category}/${command}`))(this)
+                const cmd: Command =
+                    new (require(`${path}/${category}/${command}`))(this)
 
-                if (cmd.disabled) console.log(config.logs.disabled_command(cmd.name))
-                else {
-                    this.commands.push(cmd)
-                    if (this.config.dev_mode) console.log(config.logs.single_command(cmd.name))
-                }
+                if (cmd.disabled) return logger.log("warn", `legacyCommand ${cmd.name} disabled`)
+
+                this.commands.push(cmd)
+                logger.log("debug", `legacyCommand ${cmd.name} loaded`)
             }
-        } console.log(`\x1b[33m[bot-api] All legacyCommands loaded\x1b[0m`)
+        } logger.log("info", `all legacyCommands loaded`)
     }
 
     private loadEvents(path = __dirname + '/../events') {
@@ -69,10 +71,10 @@ export class Bot extends Client {
 
                 const evt: any = new (require(`${path}/${category}/${event}`))(this)
 
-                if (this.config.dev_mode) console.log(this.config.logs.single_event(evt.name))
+                logger.log("debug", `event ${evt.name} loaded`)
                 this.on(evt.name, evt.run)
             }
-        } console.log(`\x1b[33m[bot-api] All Events loaded\x1b[0m`)
+        } logger.log("info", `all Events loaded`)
     }
 
     private loadApplicationCommands(path = __dirname + '/../applicationCommands') {
@@ -82,13 +84,13 @@ export class Bot extends Client {
 
                 const scmd = new (require(`${path}/${category}/${applicationCommand}`))(this)
 
-                if (scmd.disabled) console.log(config.logs.disabled_slash_command(scmd.name))
+                if (scmd.disabled) logger.log("warn", `applicationCommand ${scmd.name} loaded`)
                 else {
                     this.slashCommands.push(scmd)
-                    if (this.config.dev_mode) console.log(config.logs.single_application_command(scmd.name))
+                    if (this.config.dev_mode) logger.log("debug", `applicationCommand ${scmd.name} loaded`)
                 }
             }
-        } console.log(`\x1b[33m[bot-api] All applicationCommands loaded\x1b[0m`)
+        } logger.log("info", `all applicationCommands loaded`)
     }
 
     public parseMsIntoFormatData(n: string | Number) {
