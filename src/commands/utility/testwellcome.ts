@@ -28,7 +28,7 @@ module.exports = class extends Command {
         }
         const { member } = message
 
-        let guilDb = await this.client.db.getGuildDbFromMember(message.member)
+        let guilDb: any = await this.client.db.getGuildDbFromMember(message.member)
 
         const channel = member.guild.channels.cache.get(guilDb.wellcome.channel) as TextChannel
 

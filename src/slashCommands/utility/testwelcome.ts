@@ -27,7 +27,7 @@ module.exports = class extends slashCommand {
 
         const { member } = interaction
 
-        let guilDb = await this.client.db.getGuildDbFromMember(member)
+        let guilDb: any = await this.client.db.getGuildDbFromMember(member)
 
         if (guilDb.wellcome.channel == 'na') {
             embed.setDescription(`**Não há nenhum canal configurado para enviar a mensagem, ${interaction.user}**`)
