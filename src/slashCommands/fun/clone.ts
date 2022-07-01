@@ -1,7 +1,8 @@
 import { Bot } from "../../structures/Client";
 import { slashCommand } from "../../structures/slashCommand";
 import { sInteraction } from "../../types/Interaction";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember } from "discord.js";
+import { Embed } from "../../types/Embed";
 const sleep = (ms: number) => { return new Promise(resolve => setTimeout(resolve, ms)) }
 
 module.exports = class extends slashCommand {
@@ -38,7 +39,7 @@ module.exports = class extends slashCommand {
 
         if (channel.type !== 'GUILD_TEXT') return
 
-        const embed = new MessageEmbed().setDescription(`**Clone criado, ${interaction.user}**`)
+        const embed = new Embed().setDescription(`**Clone criado, ${interaction.user}**`)
 
         await interaction.editReply({ content: null, embeds: [embed] })
 
