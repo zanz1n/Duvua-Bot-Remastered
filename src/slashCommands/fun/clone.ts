@@ -1,7 +1,7 @@
 import { Bot } from "../../structures/Client";
 import { slashCommand } from "../../structures/slashCommand";
 import { sInteraction } from "../../types/Interaction";
-import { MessageEmbed } from "discord.js";
+import { GuildMember, MessageEmbed } from "discord.js";
 const sleep = (ms: number) => { return new Promise(resolve => setTimeout(resolve, ms)) }
 
 module.exports = class extends slashCommand {
@@ -29,6 +29,9 @@ module.exports = class extends slashCommand {
     }
     public run = async (interaction: sInteraction) => {
         const user = interaction.options.getUser("usuario")
+        const member = interaction.options.getMember("usuario")
+        if (!(member instanceof GuildMember) || member.partial) return
+
         const message = interaction.options.getString("message")
 
         const { channel } = interaction
@@ -39,8 +42,13 @@ module.exports = class extends slashCommand {
 
         await interaction.editReply({ content: null, embeds: [embed] })
 
-        const webhook = await channel.createWebhook(`${user.username}`, {
-            avatar: user.displayAvatarURL({
+        const webhook = await channel.createWebhook(
+            `${member.displayName || user.username}`, {
+            avatar: member.displayAvatarURL({
+                dynamic: false,
+                format: 'png',
+                size: 512
+            }) || user.displayAvatarURL({
                 dynamic: false,
                 format: 'png',
                 size: 512
@@ -50,7 +58,7 @@ module.exports = class extends slashCommand {
 
         await webhook.send(`${message}`)
 
-        await sleep(10 * 1000).then(() => {
+        await sleep(10000).then(() => {
             webhook.delete()
         })
     }
