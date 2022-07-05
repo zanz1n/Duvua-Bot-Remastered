@@ -15,7 +15,7 @@ module.exports = class extends Event {
         })
     }
     run = async (member: GuildMember) => {
-        let guilDb = await this.client.db.getGuildDbFromMember(member)
+        let guilDb: any = await this.client.db.getGuildDbFromMember(member)
 
         const channel = member.guild.channels.cache.get(guilDb.wellcome.channel) as TextChannel
 

@@ -101,7 +101,7 @@ module.exports = class extends slashCommand {
             embed.setDescription(`**Você não tem permissão para usar esse comando, ${interaction.user}**`)
             return interaction.editReply({ content: null, embeds: [embed] })
         }
-        const guilDb = await this.client.db.getGuildDbFromMember(interaction.member)
+        const guilDb: any = await this.client.db.getGuildDbFromMember(interaction.member)
 
         await guilDb.save()
         if (subCommand === "welcome") {

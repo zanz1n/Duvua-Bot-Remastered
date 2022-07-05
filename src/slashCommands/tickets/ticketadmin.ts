@@ -106,7 +106,7 @@ module.exports = class extends slashCommand {
         else if (subCommand === "delete") {
             const user = interaction.options.getUser('usuario')
 
-            const find = await this.client.db.findTicketDbFromMember(interaction.member)
+            const find: any = await this.client.db.findTicketDbFromMember(interaction.member)
             if (find) {
                 const channel = interaction.guild.channels.cache.get(find.channel.id)
                 if (channel) {

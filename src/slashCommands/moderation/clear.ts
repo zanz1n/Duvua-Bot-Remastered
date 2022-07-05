@@ -33,7 +33,7 @@ module.exports = class extends slashCommand {
     }
 
     run = async (interaction: sInteraction) => {
-        if (interaction.channel.type === "DM") return;
+        if (interaction.channel.type !== "GUILD_TEXT") return;
         const embed = new MessageEmbed()
 
         if (!interaction.memberPermissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {

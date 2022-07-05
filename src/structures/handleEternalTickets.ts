@@ -38,7 +38,7 @@ module.exports = class extends slashCommand {
         const dateNow = new Date
         const confEmbed = new MessageEmbed().setColor(this.client.config.embed_default_color)
 
-        const interactiondb = await ticket.findById(interaction.guild.id + interaction.user.id)
+        const interactiondb: any = await ticket.findById(interaction.guild.id + interaction.user.id)
 
         if (interactiondb) {
             confEmbed.setDescription(`**Você já tem um ticket criado, ${interaction.user}**`)
@@ -70,7 +70,7 @@ module.exports = class extends slashCommand {
                     ticketYes.setDisabled(true)
                     ticketNo.setDisabled(true)
                     interaction.editReply({ components: [button] })
-                    const interactiondb = await ticket.findById(i.guild.id + i.user.id) ||
+                    const interactiondb: any = await ticket.findById(i.guild.id + i.user.id) ||
                         new ticket({
                             _id: i.guild.id + i.user.id,
                             user: {
@@ -131,7 +131,7 @@ module.exports = class extends slashCommand {
                         beforeCollector.on("collect", async (iO) => {
                             if (iO.customId === `cancelBefore${dateNow}`) {
                                 const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
-                                const find = await ticket.findById(interaction.guild.id + interaction.user.id)
+                                const find: any = await ticket.findById(interaction.guild.id + interaction.user.id)
                                 if (find) {
                                     const channel = interaction.guild.channels.cache.get(find.channel.id)
                                     if (channel) {
@@ -169,7 +169,7 @@ module.exports = class extends slashCommand {
                         collector.on("collect", async (tI) => {
                             if (tI.customId === "cancel") {
                                 const embed = new MessageEmbed().setColor(this.client.config.embed_default_color)
-                                const find = await ticket.findById(interaction.guild.id + interaction.user.id)
+                                const find: any = await ticket.findById(interaction.guild.id + interaction.user.id)
                                 if (find) {
                                     const channel = interaction.guild.channels.cache.get(find.channel.id)
                                     if (channel) {
